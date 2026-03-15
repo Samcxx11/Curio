@@ -1,5 +1,5 @@
 # Run this on a separate server
-# uvicorn main:app --port 8000
+# python -m uvicorn embeddings_calculator:app --port 8000
 
 from fastapi import FastAPI
 from pydantic import BaseModel

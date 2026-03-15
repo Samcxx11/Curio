@@ -5,7 +5,7 @@ function startNewsCron() {
 
   console.log("News cron initialized");
 
-  cron.schedule("*/5 * * * * *", async () => {
+  cron.schedule("*/ * * * * *", async () => {
     console.log("Running news ingestion...");
     await fetchNews();
   });

@@ -8,7 +8,7 @@ const newsapi = new NewsAPI(process.env.NEWS_API_KEY);
 
 async function getNewsEmbedding(news) {
 
-  await axios.post("http://localhost:8000/calculate_embeddings/news", {
+  const response = await axios.post("http://localhost:8000/calculate_embeddings/news", {
         title: news.title,
         description: news.description
     });
@@ -32,16 +32,19 @@ async function fetchNews() {
 
     const articles = response.articles;
 
-    console.log("Fetched:", articles[0].title);
+    console.log("Fetched:", articles.length);
+    console.log("First:", articles[0].title);
+    console.log("Last:", articles[articles.length - 1].title);
 
     for (const article of articles) {
 
         //save article in .csv file
-        const csvFilePath = path.resolve("news_articles.csv");      
-        const csvHeaders = "title,description\n";
+        const csvFilePath = path.resolve("src/services/news_articles.csv");      
+        const csvHeaders = "title,description,embedding\n";
 
         // Write headers if file does not exist
         if (!fs.existsSync(csvFilePath)) {
+            console.log("Creating CSV file with headers");
             fs.writeFileSync(csvFilePath, csvHeaders);
         }
 
@@ -50,15 +53,14 @@ async function fetchNews() {
             if (!field) return "";
             return `"${String(field).replace(/"/g, '""')}"`;
         }
-
-        const csvLine = `${escapeCsvField(article.title)},${escapeCsvField(article.description)}\n`;
-        fs.appendFileSync(csvFilePath, csvLine);
-
         const news = {
             title: article.title,
             description: article.description || ""
-        }  
+        };
         const embedding = await getNewsEmbedding(news);
+        const csvLine = `${escapeCsvField(article.title)},${escapeCsvField(article.description)},${escapeCsvField(embedding)}\n`;
+        fs.appendFileSync(csvFilePath, csvLine);
+          
     }
 
   } catch (err) {
