@@ -1,23 +1,13 @@
 import NewsAPI from "newsapi";
 import pool from "../db/db.js";
 import axios from "axios";
-import fs from "fs";
-import path from "path";
+import { ApiError } from "../utils/ApiError.js";
+import { ApiResponse } from "../utils/ApiResponse.js";
+import { asyncHandler } from "../utils/asyncHandler.js";
 
 const newsapi = new NewsAPI(process.env.NEWS_API_KEY);
 
-async function getNewsEmbedding(news) {
-
-  const response = await axios.post("http://localhost:8000/calculate_embeddings/news", {
-        title: news.title,
-        description: news.description
-    });
-  return response.data.embedding;
-
-}
-
-async function fetchNews() {
-
+const fetchNews = asyncHandler(async () => {
   try {
 
     const sources = await newsapi.v2.sources({
@@ -37,31 +27,28 @@ async function fetchNews() {
     console.log("Last:", articles[articles.length - 1].title);
 
     for (const article of articles) {
+      const news = {
+        title: article.title,
+        description: article.description,
+        published_at: article.publishedAt,
+        source: article.source.name,
+        author: article.author,
+        url: article.url
 
-        //save article in .csv file
-        const csvFilePath = path.resolve("src/services/news_articles.csv");      
-        const csvHeaders = "title,description,embedding\n";
-
-        // Write headers if file does not exist
-        if (!fs.existsSync(csvFilePath)) {
-            console.log("Creating CSV file with headers");
-            fs.writeFileSync(csvFilePath, csvHeaders);
-        }
-
-        // Escape double quotes and commas in CSV fields
-        function escapeCsvField(field) {
-            if (!field) return "";
-            return `"${String(field).replace(/"/g, '""')}"`;
-        }
-        const news = {
-            title: article.title,
-            description: article.description || ""
-        };
-        const embedding = await getNewsEmbedding(news);
-        const csvLine = `${escapeCsvField(article.title)},${escapeCsvField(article.description)},${escapeCsvField(embedding)}\n`;
-        fs.appendFileSync(csvFilePath, csvLine);
-          
+      }
+      const embed_input = {
+          title: article.title,
+          description: article.description || ""
+      };
+      const embedding = await getNewsEmbedding(embed_input);
     }
+    return res
+      .status(200)
+      .json(new ApiResponse(
+        true, 
+        "News fetched successfully", 
+        { ...news, embedding }
+      ));
 
   } catch (err) {
 
@@ -69,6 +56,9 @@ async function fetchNews() {
 
   }
 
-}
+});
 
-export default fetchNews;
+export default {
+  fetchNews,
+  getNewsEmbedding
+};

@@ -5,7 +5,7 @@ function startNewsCron() {
 
   console.log("News cron initialized");
 
-  cron.schedule("*/ * * * * *", async () => {
+  cron.schedule("*/1 * * * *", async () => { //Ingesting news at every minute
     console.log("Running news ingestion...");
     await fetchNews();
   });
