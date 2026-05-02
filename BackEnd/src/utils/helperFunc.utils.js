@@ -23,7 +23,7 @@ function normalize(vec) {
     return vec.map(v => v / norm);
 }
 
-export default {
+export {
     meanEmbedding,
     normalize
 };

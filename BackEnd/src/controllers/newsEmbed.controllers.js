@@ -12,7 +12,6 @@ const createNewsEmbedding = asyncHandler(async (req, res) => {
         throw new ApiError(400, "News data is required for embedding calculation");
     }
     let embedding = [];
-    for(const key in news) {
         const response = await axios.post("http://localhost:8000/calculate_embeddings/news", {
             title: key.title,
             description: key.description
@@ -21,7 +20,7 @@ const createNewsEmbedding = asyncHandler(async (req, res) => {
             NID : key.NID,
             embed: response.data.embedding
         });
-    }
+        
     let client;
     try {
         client = await pool.connect();
@@ -102,7 +101,7 @@ const cat_embedding = asyncHandler(async (req, res) => {
     }
 });
 
-export default {
+export {
     createNewsEmbedding,
     cat_embedding
 };

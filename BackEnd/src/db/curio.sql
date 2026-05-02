@@ -95,6 +95,7 @@ CREATE TABLE authors(
 	a_name varchar(50) Not Null
 );
 select* from authors;
+ALTER TABLE authors ADD CONSTRAINT authors_a_name_key UNIQUE (a_name);
 
 --------------------------------------------------------------------------------------------
 --7
@@ -107,6 +108,7 @@ CREATE TABLE sources(
 	credibility_score float
 );
 select* from sources;
+ALTER TABLE sources ADD CONSTRAINT sources_domain_name_key UNIQUE (domain_name);
 
 --------------------------------------------------------------------------------------------
 --8
@@ -224,7 +226,9 @@ ALTER TABLE categories
 RENAME COLUMN car_embed to embeddings; 
 
 select* from categories;
-
+INSERT INTO categories (cat_name) VALUES
+  ('World'), ('Technology'), ('Sports'), ('Business'),
+  ('Science'), ('Entertainment'), ('Politics'), ('Environment');
 --------------------------------------------------------------------------------------------
 --------------------------------------------------------------------------------------------
 
