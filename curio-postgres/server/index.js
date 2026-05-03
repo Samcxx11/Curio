@@ -1,57 +1,100 @@
-require('dotenv').config();
-const express   = require('express');
-const cors      = require('cors');
-const session   = require('express-session');
-const passport  = require('./config/passport');
-const path      = require('path');
-const sequelize = require('./config/db');
+import dotenv from 'dotenv';
+dotenv.config();
+import express from 'express';
+import cors from 'cors';
+import session from 'express-session';
+import passport, {googleConfigured} from './config/passport.config.js';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import pool from './models/db.models.js';
 
-// ── Startup validation ─────────────────────────────────────────
+// Fix __dirname for ES modules
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// ── ENV VALIDATION ─────────────────────────
 const required = ['DATABASE_URL', 'JWT_SECRET', 'SESSION_SECRET'];
-const missing  = required.filter(k => !process.env[k] || process.env[k].startsWith('your_'));
+const missing = required.filter(
+  k => !process.env[k] || process.env[k].startsWith('your_')
+);
+
 if (missing.length) {
-  console.error('❌ Missing required env vars:', missing.join(', '));
+  console.error('❌ Missing env vars:', missing.join(', '));
   process.exit(1);
 }
 
-const CLIENT_URL = process.env.CLIENT_URL || `http://localhost:${process.env.PORT || 5000}`;
+const CLIENT_URL =
+  process.env.CLIENT_URL || `http://localhost:${process.env.PORT || 5000}`;
 
 const app = express();
 
-app.use(cors({ origin: CLIENT_URL, credentials: true }));
-app.use(express.json());
-app.use(session({
-  secret:            process.env.SESSION_SECRET,
-  resave:            false,
-  saveUninitialized: false,
-  cookie: { secure: process.env.NODE_ENV === 'production', maxAge: 7 * 24 * 60 * 60 * 1000 },
+// ── MIDDLEWARE ─────────────────────────────
+app.use(cors({
+  origin: CLIENT_URL,
+  credentials: true
 }));
+
+app.use(express.json());
+
+app.use(session({
+  secret: process.env.SESSION_SECRET,
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+    secure: process.env.NODE_ENV === 'production',
+    maxAge: 7 * 24 * 60 * 60 * 1000
+  }
+}));
+
 app.use(passport.initialize());
 app.use(passport.session());
 
-// Serve static frontend
+// ── STATIC FILES ───────────────────────────
 app.use(express.static(path.join(__dirname, '../public')));
 
-// API routes
-app.use('/api/auth', require('./routes/auth'));
-app.use('/api/news', require('./routes/news'));
-app.use('/api/chat', require('./routes/chat'));
-app.get('/api/health', (_, res) => res.json({ status: 'ok', googleOAuth: !!passport.googleConfigured }));
+// ── ROUTES ────────────────────────────────
+import authRoutes from './routes/auth.routes.js';
+import newsRoutes from './routes/news.routes.js';
+import chatRoutes from './routes/chat.routes.js';
 
-// SPA fallback
-app.get('*', (req, res) => {
-  if (!req.path.startsWith('/api'))
-    res.sendFile(path.join(__dirname, '../public/index.html'));
+app.use('/api/auth', authRoutes);
+app.use('/api/news', newsRoutes);
+app.use('/api/chat', chatRoutes);
+
+app.get('/api/health', (_, res) => {
+  res.json({
+    status: 'ok',
+    googleOAuth: !!googleConfigured
+  });
 });
 
-// ── DB sync + Listen ───────────────────────────────────────────
-sequelize.sync()   // creates tables if they don't exist
-  .then(() => {
-    console.log('✅ PostgreSQL connected & tables synced');
+// ── SPA FALLBACK ──────────────────────────
+app.get('*', (req, res) => {
+  if (!req.path.startsWith('/api')) {
+    res.sendFile(path.join(__dirname, '../public/index.html'));
+  }
+});
+
+// ── START SERVER ──────────────────────────
+const startServer = async () => {
+  try {
+    // ✅ Test PostgreSQL connection
+    await pool.query('SELECT 1');
+
+    console.log('✅ PostgreSQL connected');
+
     app.listen(process.env.PORT || 5000, () => {
       console.log(`🚀 Server running on http://localhost:${process.env.PORT || 5000}`);
-      if (!passport.googleConfigured)
-        console.warn('⚠️  Google OAuth disabled — add credentials to .env to enable it');
+
+      if (!googleConfigured) {
+        console.warn('⚠️ Google OAuth disabled');
+      }
     });
-  })
-  .catch(err => { console.error('❌ PostgreSQL error:', err.message); process.exit(1); });
+
+  } catch (err) {
+    console.error('❌ PostgreSQL connection error:', err);
+    process.exit(1);
+  }
+};
+
+startServer();

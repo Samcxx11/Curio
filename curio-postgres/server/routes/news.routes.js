@@ -1,6 +1,12 @@
-const router = require('express').Router();
-const authMiddleware = require('../middleware/auth');
+import express from 'express';
+import authMiddleware from '../middleware/auth.middleware.js';
+import pool from '../models/db.models.js';
 
+const router = express.Router();
+
+// ─────────────────────────────────────────────
+// Dummy News
+// ─────────────────────────────────────────────
 const DUMMY_NEWS = [
   { id:'1', title:'Scientists Discover Water on Mars', category:'Science', image:'https://picsum.photos/seed/mars/400/240', summary:'NASA researchers confirm subsurface water lake beneath Martian south pole.', validity: 94, date:'2025-05-01', source:'NASA' },
   { id:'2', title:'Global EV Sales Hit Record High in Q1 2025', category:'Technology', image:'https://picsum.photos/seed/ev/400/240', summary:'Electric vehicle sales surpassed 4 million units globally in first quarter.', validity: 88, date:'2025-04-30', source:'Reuters' },
@@ -16,13 +22,21 @@ const DUMMY_NEWS = [
   { id:'12', title:'India Bans Single-Use Plastics Nationwide', category:'Environment', image:'https://picsum.photos/seed/plastic/400/240', summary:'Government enforces strict new rules on packaging and disposable items.', validity: 88, date:'2025-04-20', source:'The Hindu' },
 ];
 
-// GET /api/news?category=&page=&limit=
+// GET /api/news
 router.get('/', (req, res) => {
   const { category, page = 1, limit = 6 } = req.query;
+
   let news = DUMMY_NEWS;
-  if (category && category !== 'All') news = news.filter(n => n.category === category);
+  if (category && category !== 'All') {
+    news = news.filter(n => n.category === category);
+  }
+
   const start = (page - 1) * limit;
-  res.json({ news: news.slice(start, start + Number(limit)), total: news.length });
+
+  res.json({
+    news: news.slice(start, start + Number(limit)),
+    total: news.length
+  });
 });
 
 // GET /api/news/top10
@@ -38,14 +52,42 @@ router.get('/categories', (req, res) => {
 
 // POST /api/news/bookmark/:id
 router.post('/bookmark/:id', authMiddleware, async (req, res) => {
-  const User = require('../models/User');
-  const user = await User.findById(req.user.id);
-  const idx = user.bookmarks.indexOf(req.params.id);
-  if (idx > -1) user.bookmarks.splice(idx, 1);
-  else user.bookmarks.push(req.params.id);
-  await user.save();
-  res.json({ bookmarks: user.bookmarks });
+  const UID = req.user.id;
+  const NID = req.params.id;
+
+  let client;
+
+  try {
+    client = await pool.connect();
+
+    const check = await client.query(
+      `SELECT * FROM bookmarks WHERE UID = $1 AND NID = $2`,
+      [UID, NID]
+    );
+
+    if (check.rows.length > 0) {
+      await client.query(
+        `DELETE FROM bookmarks WHERE UID = $1 AND NID = $2`,
+        [UID, NID]
+      );
+
+      return res.json({ message: "Bookmark removed", bookmarked: false });
+    } else {
+      await client.query(
+        `INSERT INTO bookmarks (UID, NID) VALUES ($1, $2)`,
+        [UID, NID]
+      );
+
+      return res.json({ message: "Bookmark added", bookmarked: true });
+    }
+
+  } catch (err) {
+    console.error("Bookmark error:", err);
+    res.status(500).json({ message: "Server error" });
+  } finally {
+    if (client) client.release();
+  }
 });
 
-module.exports = router;
-module.exports.DUMMY_NEWS = DUMMY_NEWS;
+export default router;
+export { DUMMY_NEWS };

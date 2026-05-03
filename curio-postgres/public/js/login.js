@@ -2,7 +2,6 @@
    LOGIN MODAL
    curio/js/login.js
 ══════════════════════════════ */
-
 const overlay = document.getElementById('login-overlay');
 
 function openLogin(tab) {

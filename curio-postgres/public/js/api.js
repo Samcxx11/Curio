@@ -1,4 +1,5 @@
 /* ══ Curio API Client ══ */
+
 const API = '/api';
 
 // ── Auth helpers ──────────────────────────────────────────────
@@ -47,6 +48,7 @@ async function bookmarkNews(id) {
 // ── UI: Update nav based on auth state ────────────────────────
 function updateAuthUI() {
   const user = getUser();
+  console.log('Updating auth UI, user:', user);
   const loginBtn = document.querySelector('.btn-login');
   const ctaBtn   = document.querySelector('.btn-nav-cta');
   const logoutBtn = document.getElementById('logoutBtn');
