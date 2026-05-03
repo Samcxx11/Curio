@@ -1,0 +1,84 @@
+/* ══════════════════════════════
+   TOKENS — Design Variables
+   curio/css/tokens.css
+══════════════════════════════ */
+
+:root {
+  /* Core palette */
+  --charcoal:   #0f1512;
+  --dark:       #1a1f1b;
+  --dark-2:     #242a25;
+  --sage:       #b7c6c2;
+  --sage-dim:   #8fa49f;
+  --yellow:     #f5d842;
+  --yellow-dim: rgba(245,216,66,.18);
+  --red:        #e8453c;
+  --red-dim:    rgba(232,69,60,.15);
+  --green:      #2dcc72;
+  --green-dim:  rgba(45,204,114,.15);
+  --white:      #ffffff;
+  --f8:         #f6f7f5;
+  --f8-2:       #eeefed;
+
+  /* Semantic */
+  --surface:    var(--white);
+  --text-main:  var(--charcoal);
+  --text-muted: rgba(15,21,18,.5);
+  --border:     rgba(15,21,18,.1);
+  --border-2:   rgba(15,21,18,.06);
+
+  /* Grid dot bg */
+  --grid-color: rgba(15,21,18,.06);
+
+  /* Ease curves */
+  --ease-out: cubic-bezier(.4,0,.2,1);
+  --ease-spring: cubic-bezier(.34,1.56,.64,1);
+
+  /* Spacing scale */
+  --space-xs: 8px;
+  --space-sm: 16px;
+  --space-md: 24px;
+  --space-lg: 48px;
+  --space-xl: 80px;
+  --space-2xl: 120px;
+
+  /* Radii */
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --radius-xl: 28px;
+  --radius-pill: 999px;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Satoshi', 'DM Sans', sans-serif;
+  background: var(--white);
+  color: var(--charcoal);
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar        { width: 5px; }
+::-webkit-scrollbar-track  { background: var(--f8); }
+::-webkit-scrollbar-thumb  { background: var(--charcoal); border-radius: 3px; }
+
+/* ── FOCUS RING ── */
+:focus-visible {
+  outline: 2px solid var(--yellow);
+  outline-offset: 3px;
+}
+
+/* ── UTILITY CLASSES ── */
+.visually-hidden {
+  position: absolute; width: 1px; height: 1px;
+  overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap;
+}

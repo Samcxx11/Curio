@@ -4,6 +4,7 @@ import axios from "axios";
 import { ApiError } from "../utils/ApiError.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import {createNewsEmbedding,cat_embedding} from "../controllers/newsEmbed.controllers.js";
+import { categorizeNews } from "./ai.services.js";
 
 const newsapi = new NewsAPI(process.env.NEWS_API_KEY);
 
@@ -33,33 +34,29 @@ const getNewsScore = async ({ title, description, source }) => {
 
 // ── Upsert source, return SID ─────────────────────────────────────────────────
 const upsertSource = async (client, sourceName) => {
-    const domain = sourceName?.toLowerCase().replace(/\s+/g, "") || "unknown";
+    const name   = (sourceName?.trim() || "Unknown").slice(0, 50); // ← slice here
+    const domain = name.toLowerCase().replace(/\s+/g, "");
     const res = await client.query(
         `INSERT INTO sources (s_name, domain_name)
          VALUES ($1, $2)
          ON CONFLICT (domain_name) DO UPDATE SET s_name = EXCLUDED.s_name
          RETURNING SID`,
-        [sourceName || "Unknown", domain]
+        [name, domain]
     );
     return res.rows[0].sid;
 };
 
 // ── Upsert author, return AID ─────────────────────────────────────────────────
 const upsertAuthor = async (client, authorName) => {
-    const name = authorName || "Unknown";
+    const name = (authorName?.trim() || "Unknown").slice(0, 50); // ← slice here
     const res = await client.query(
         `INSERT INTO authors (a_name)
          VALUES ($1)
-         ON CONFLICT DO NOTHING
+         ON CONFLICT (a_name) DO UPDATE SET a_name = EXCLUDED.a_name
          RETURNING AID`,
         [name]
     );
-    if (res.rows.length > 0) return res.rows[0].aid;
-    // Already existed — fetch it
-    const existing = await client.query(
-        `SELECT AID FROM authors WHERE a_name = $1 LIMIT 1`, [name]
-    );
-    return existing.rows[0].aid;
+    return res.rows[0].aid;
 };
 
 // ── Main ingestion function ───────────────────────────────────────────────────
@@ -93,11 +90,12 @@ const fetchNews = async () => {
                 // Resolve SID and AID
                 const sid = await upsertSource(client, article.source?.name);
                 const aid = await upsertAuthor(client, article.author);
+                const catId = await categorizeNews(article.title, article.description);
 
                 // Insert news row (CatID = 1 as default — update with classifier later)
                 const newsResult = await client.query(
                     `INSERT INTO news (title, description, url, published_at, SID, AID, CatID)
-                     VALUES ($1, $2, $3, $4, $5, $6, 1)
+                     VALUES ($1, $2, $3, $4, $5, $6, $7)
                      RETURNING NID`,
                     [
                         article.title,
@@ -105,7 +103,8 @@ const fetchNews = async () => {
                         article.url,
                         article.publishedAt,
                         sid,
-                        aid
+                        aid,
+                        catId[0] // take the first category ID returned by the classifier
                     ]
                 );
                 const nid = newsResult.rows[0].nid;
@@ -119,8 +118,10 @@ const fetchNews = async () => {
                         description: article.description
                     });
                     await client.query(
-                        `INSERT INTO news_embeddings (NID, embed) VALUES ($1, $2)`,
-                        [nid, JSON.stringify(embedding)]
+                      `INSERT INTO news_embeddings (NID, embed)
+                      VALUES ($1, $2)
+                      ON CONFLICT (NID) DO UPDATE SET embed = EXCLUDED.embed`,
+                      [nid, `[${embedding.join(',')}]`]
                     );
                 } catch (embedErr) {
                     console.warn(`Embedding skipped for ${nid}:`, embedErr.message);
@@ -132,6 +133,7 @@ const fetchNews = async () => {
                     description: article.description,
                     source: article.source?.name
                 });
+                console.log(`Scores for [${nid}]:`, scores);
                 await client.query(
                     `INSERT INTO fake_score (NID, clickbait_score, f_score)
                      VALUES ($1, $2, $3)

@@ -1,0 +1,1207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Curio — Know the Truth Before You Share</title>
+  <meta name="description" content="AI-powered fake news detection. Verify news instantly with machine learning." />
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Satoshi:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="css/tokens.css" />
+  <link rel="stylesheet" href="css/nav.css" />
+  <link rel="stylesheet" href="css/hero.css" />
+  <link rel="stylesheet" href="css/sections.css" />
+  <link rel="stylesheet" href="css/footer.css" />
+  <link rel="stylesheet" href="css/responsive.css" />
+
+  <!-- GSAP -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+</head>
+<body>
+
+<!-- ══ NAV ══ -->
+<div id="card-nav-container">
+  <nav id="card-nav">
+    <div class="nav-top">
+      <!-- Hamburger (left, opens card dropdown) -->
+      <button class="nav-menu-btn" id="menuToggle" aria-label="Toggle menu">
+        <svg id="menuIcon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/>
+        </svg>
+        <svg id="closeIcon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="display:none">
+          <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+      </button>
+
+      <!-- Logo — anchored left via margin-right:auto -->
+      <a href="#" class="nav-logo">Curio<span>.</span></a>
+
+      <!-- Everything right of the logo in one cluster -->
+      <div class="nav-right-cluster">
+
+        <!-- Greeting pill -->
+        <div class="nav-greeting" id="navGreeting">
+          <span class="greet-emoji">☀️</span>
+          <span class="greet-text">Good Morning</span>
+        </div>
+
+        <div class="nav-divider"></div>
+
+        <!-- Nav links -->
+        <ul class="nav-links">
+          <li><a href="#features">Features</a></li>
+          <li><a href="#how">How It Works</a></li>
+          <li><a href="#news-trending">News</a></li>
+          <li><a href="#testimonials">Reviews</a></li>
+        </ul>
+
+        <div class="nav-divider"></div>
+
+        <!-- Search -->
+        <div class="nav-search" role="search">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+            <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+          </svg>
+          <input type="search" placeholder="Search news…" aria-label="Search news" />
+        </div>
+
+        <!-- Login + CTA -->
+        <div class="nav-right">
+          <button class="btn-login" onclick="openLogin('login')">Login</button>
+          <button class="btn-nav-cta" onclick="openLogin('register')">Get Started</button>
+          <button id="logoutBtn">Log Out</button>
+        </div>
+
+      </div><!-- /nav-right-cluster -->
+    </div>
+
+    <!-- Card submenus -->
+    <div class="nav-cards" id="navCards">
+      <div class="nav-card" style="background:#0f1512;color:#fff;" data-idx="0">
+        <div class="nav-card-title">Product</div>
+        <div class="nav-card-links">
+          <a class="nav-card-link" href="#features" style="color:#fff;">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>
+            <span>Features</span>
+          </a>
+          <a class="nav-card-link" href="#how" style="color:#fff;">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>
+            <span>How It Works</span>
+          </a>
+          <a class="nav-card-link" href="#" style="color:#fff;">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>
+            <span>Pricing</span>
+          </a>
+        </div>
+      </div>
+      <div class="nav-card" style="background:#170d27;color:#fff;" data-idx="1">
+        <div class="nav-card-title">Resources</div>
+        <div class="nav-card-links">
+          <a class="nav-card-link" href="#" style="color:#fff;">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>
+            <span>Blog</span>
+          </a>
+          <a class="nav-card-link" href="#" style="color:#fff;">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>
+            <span>Documentation</span>
+          </a>
+          <a class="nav-card-link" href="#testimonials" style="color:#fff;">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>
+            <span>Reviews</span>
+          </a>
+        </div>
+      </div>
+      <div class="nav-card" style="background:#1a1a2e;color:#fff;" data-idx="2">
+        <div class="nav-card-title">Company</div>
+        <div class="nav-card-links">
+          <a class="nav-card-link" href="#" style="color:#fff;">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>
+            <span>About</span>
+          </a>
+          <a class="nav-card-link" href="#" style="color:#fff;">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>
+            <span>Careers</span>
+          </a>
+          <a class="nav-card-link" href="#" style="color:#fff;">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>
+            <span>Contact</span>
+          </a>
+          <!-- Sidebar shortcuts -->
+          <div style="height:1px;background:rgba(255,255,255,.1);margin:6px 0;"></div>
+          <a class="nav-card-link" href="#main-layout" style="color:rgba(255,255,255,.6);">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+            <span>Bookmarks</span>
+          </a>
+          <a class="nav-card-link" href="#main-layout" style="color:rgba(255,255,255,.6);">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+            <span>Categories</span>
+          </a>
+          <a class="nav-card-link" href="#main-layout" style="color:rgba(255,255,255,.6);">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            <span>Daily Quiz</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </nav>
+</div>
+
+<!-- ══ HERO ══ -->
+<section id="hero">
+  <div class="hero-badge">
+    <span class="hero-badge-dot"></span>
+    AI-Powered · 97.4% Accuracy · Trusted by 50K+
+  </div>
+
+  <h1 class="hero-headline">
+    Know the Truth<br>
+    Before You <span class="hero-highlight">Share.</span>
+  </h1>
+
+  <p class="hero-sub">
+    Curio uses machine learning to detect fake news instantly — analyzing source credibility, language bias, and cross-reference patterns in seconds.
+  </p>
+
+  <div class="hero-form">
+    <input class="hero-input" type="url" placeholder="Paste a news URL or headline…" aria-label="News URL or headline" />
+    <button class="hero-form-btn">Verify Now</button>
+  </div>
+
+  <div class="hero-stat-row">
+    <div class="hero-stat">
+      <span class="stat-dot"></span>
+      <strong>97.4%</strong> detection accuracy
+    </div>
+    <div class="hero-stat">
+      <strong>2.1s</strong> average check time
+    </div>
+    <div class="hero-stat">
+      <strong>50K+</strong> articles analyzed
+    </div>
+  </div>
+
+  <div class="hero-trust">
+    <p class="hero-trust-label">Trusted by journalists at</p>
+    <div class="hero-trust-logos">
+      <span class="trust-logo">Reuters</span>
+      <span class="trust-logo">AP News</span>
+      <span class="trust-logo">The Hindu</span>
+      <span class="trust-logo">BBC</span>
+      <span class="trust-logo">NDTV</span>
+    </div>
+  </div>
+
+  <div class="scroll-cue" aria-hidden="true">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+      <line x1="12" y1="5" x2="12" y2="19"/><polyline points="19 12 12 19 5 12"/>
+    </svg>
+    <span>Scroll</span>
+  </div>
+</section>
+
+<!-- ══ PROOF TICKER ══ -->
+<div class="proof-bar" aria-hidden="true">
+  <div class="proof-track" id="proofTrack">
+    <span class="proof-item"><b>97.4%</b> Detection Accuracy</span>
+    <span class="proof-item"><b>50,000+</b> Articles Verified</span>
+    <span class="proof-item"><b>2.1s</b> Average Check Time</span>
+    <span class="proof-item"><b>12 Languages</b> Supported</span>
+    <span class="proof-item"><b>Real-Time</b> Source Analysis</span>
+    <span class="proof-item"><b>AI-Powered</b> Bias Detection</span>
+    <span class="proof-item"><b>Free</b> Basic Plan</span>
+    <span class="proof-item"><b>97.4%</b> Detection Accuracy</span>
+    <span class="proof-item"><b>50,000+</b> Articles Verified</span>
+    <span class="proof-item"><b>2.1s</b> Average Check Time</span>
+    <span class="proof-item"><b>12 Languages</b> Supported</span>
+    <span class="proof-item"><b>Real-Time</b> Source Analysis</span>
+    <span class="proof-item"><b>AI-Powered</b> Bias Detection</span>
+    <span class="proof-item"><b>Free</b> Basic Plan</span>
+  </div>
+</div>
+
+<!-- ══ PROBLEM / SOLUTION ══ -->
+<section id="problem-solution" aria-label="Problem and Solution">
+  <div class="ps-half ps-left">
+    <div class="ps-label">The Problem</div>
+    <h2 class="ps-headline">The Misinformation<br>Epidemic</h2>
+    <div class="ps-items">
+      <div class="ps-item"><div class="ps-icon">✕</div><span>Fake news spreads 6× faster than real news on social media</span></div>
+      <div class="ps-item"><div class="ps-icon">✕</div><span>Manual fact-checking takes hours — misinformation travels in minutes</span></div>
+      <div class="ps-item"><div class="ps-icon">✕</div><span>Headlines designed to trigger emotional sharing, not critical thinking</span></div>
+      <div class="ps-item"><div class="ps-icon">✕</div><span>Deepfakes and AI-generated articles are increasingly indistinguishable</span></div>
+    </div>
+  </div>
+  <div class="ps-half ps-right">
+    <div class="ps-label">The Curio Way</div>
+    <h2 class="ps-headline">Truth in<br>Seconds</h2>
+    <div class="ps-items">
+      <div class="ps-item"><div class="ps-icon">✓</div><span>ML model cross-references 200+ trusted sources in real time</span></div>
+      <div class="ps-item"><div class="ps-icon">✓</div><span>Instant results — paste a URL and get a credibility score in 2 seconds</span></div>
+      <div class="ps-item"><div class="ps-icon">✓</div><span>Sentiment & bias analysis surfaces hidden editorial slant</span></div>
+      <div class="ps-item"><div class="ps-icon">✓</div><span>Browser extension checks every article as you browse</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ TOP 10 TRENDING (SLIDER) ══ -->
+<section id="news-trending">
+  <div class="news-trending-header">
+    <div class="trending-label">
+      <span class="live-dot"></span>
+      <span>Top 10 Trending Today</span>
+    </div>
+    <div class="slider-controls">
+      <button class="slider-btn" id="sliderPrev" aria-label="Previous">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg>
+      </button>
+      <button class="slider-btn" id="sliderNext" aria-label="Next">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <div class="news-slider-viewport">
+    <div class="news-slider-track" id="newsSliderTrack">
+
+      <!-- Card 1 -->
+      <article class="news-card">
+        <div class="news-card-img">
+          <span>📰</span>
+          <div class="news-card-img-gradient"></div>
+          <div class="news-card-rank">#1</div>
+          <div class="news-card-badge fake">Fake</div>
+        </div>
+        <div class="news-card-body">
+          <div class="news-card-source">Social Media</div>
+          <div class="news-card-title">"New study proves 5G towers cause viral infections"</div>
+          <div class="news-card-score">
+            <div class="score-bar-bg"><div class="score-bar-fill fake" data-width="89%"></div></div>
+            <div class="score-val">89% Fake</div>
+          </div>
+        </div>
+      </article>
+
+      <!-- Card 2 -->
+      <article class="news-card">
+        <div class="news-card-img">
+          <span>🌍</span>
+          <div class="news-card-img-gradient"></div>
+          <div class="news-card-rank">#2</div>
+          <div class="news-card-badge real">Real</div>
+        </div>
+        <div class="news-card-body">
+          <div class="news-card-source">Reuters</div>
+          <div class="news-card-title">UN Climate Summit reaches landmark emissions agreement</div>
+          <div class="news-card-score">
+            <div class="score-bar-bg"><div class="score-bar-fill real" data-width="94%"></div></div>
+            <div class="score-val">94% Real</div>
+          </div>
+        </div>
+      </article>
+
+      <!-- Card 3 -->
+      <article class="news-card">
+        <div class="news-card-img">
+          <span>💉</span>
+          <div class="news-card-img-gradient"></div>
+          <div class="news-card-rank">#3</div>
+          <div class="news-card-badge unverified">Unverified</div>
+        </div>
+        <div class="news-card-body">
+          <div class="news-card-source">WhatsApp Forward</div>
+          <div class="news-card-title">Government to mandate new booster dose by year-end</div>
+          <div class="news-card-score">
+            <div class="score-bar-bg"><div class="score-bar-fill unverified" data-width="51%"></div></div>
+            <div class="score-val">51% Verified</div>
+          </div>
+        </div>
+      </article>
+
+      <!-- Card 4 -->
+      <article class="news-card">
+        <div class="news-card-img">
+          <span>🏦</span>
+          <div class="news-card-img-gradient"></div>
+          <div class="news-card-rank">#4</div>
+          <div class="news-card-badge real">Real</div>
+        </div>
+        <div class="news-card-body">
+          <div class="news-card-source">Bloomberg</div>
+          <div class="news-card-title">RBI holds repo rate for fifth consecutive quarter</div>
+          <div class="news-card-score">
+            <div class="score-bar-bg"><div class="score-bar-fill real" data-width="97%"></div></div>
+            <div class="score-val">97% Real</div>
+          </div>
+        </div>
+      </article>
+
+      <!-- Card 5 -->
+      <article class="news-card">
+        <div class="news-card-img">
+          <span>🤖</span>
+          <div class="news-card-img-gradient"></div>
+          <div class="news-card-rank">#5</div>
+          <div class="news-card-badge fake">Fake</div>
+        </div>
+        <div class="news-card-body">
+          <div class="news-card-source">Parody Site</div>
+          <div class="news-card-title">"AI achieves full human consciousness, files for citizenship"</div>
+          <div class="news-card-score">
+            <div class="score-bar-bg"><div class="score-bar-fill fake" data-width="98%"></div></div>
+            <div class="score-val">98% Fake</div>
+          </div>
+        </div>
+      </article>
+
+      <!-- Card 6 -->
+      <article class="news-card">
+        <div class="news-card-img">
+          <span>🚀</span>
+          <div class="news-card-img-gradient"></div>
+          <div class="news-card-rank">#6</div>
+          <div class="news-card-badge real">Real</div>
+        </div>
+        <div class="news-card-body">
+          <div class="news-card-source">ISRO Press Release</div>
+          <div class="news-card-title">Chandrayaan-4 mission greenlit for 2026 launch window</div>
+          <div class="news-card-score">
+            <div class="score-bar-bg"><div class="score-bar-fill real" data-width="91%"></div></div>
+            <div class="score-val">91% Real</div>
+          </div>
+        </div>
+      </article>
+
+      <!-- Card 7 -->
+      <article class="news-card">
+        <div class="news-card-img">
+          <span>⚡</span>
+          <div class="news-card-img-gradient"></div>
+          <div class="news-card-rank">#7</div>
+          <div class="news-card-badge unverified">Unverified</div>
+        </div>
+        <div class="news-card-body">
+          <div class="news-card-source">Twitter/X Thread</div>
+          <div class="news-card-title">Power grid cyberattack planned for major Indian cities</div>
+          <div class="news-card-score">
+            <div class="score-bar-bg"><div class="score-bar-fill unverified" data-width="38%"></div></div>
+            <div class="score-val">38% Verified</div>
+          </div>
+        </div>
+      </article>
+
+      <!-- Card 8 -->
+      <article class="news-card">
+        <div class="news-card-img">
+          <span>🎯</span>
+          <div class="news-card-img-gradient"></div>
+          <div class="news-card-rank">#8</div>
+          <div class="news-card-badge fake">Fake</div>
+        </div>
+        <div class="news-card-body">
+          <div class="news-card-source">Unknown Blog</div>
+          <div class="news-card-title">"Eating onions every morning cures all forms of cancer"</div>
+          <div class="news-card-score">
+            <div class="score-bar-bg"><div class="score-bar-fill fake" data-width="95%"></div></div>
+            <div class="score-val">95% Fake</div>
+          </div>
+        </div>
+      </article>
+
+      <!-- Card 9 -->
+      <article class="news-card">
+        <div class="news-card-img">
+          <span>🌊</span>
+          <div class="news-card-img-gradient"></div>
+          <div class="news-card-rank">#9</div>
+          <div class="news-card-badge real">Real</div>
+        </div>
+        <div class="news-card-body">
+          <div class="news-card-source">AP News</div>
+          <div class="news-card-title">Ocean surface temperatures hit 130-year record high</div>
+          <div class="news-card-score">
+            <div class="score-bar-bg"><div class="score-bar-fill real" data-width="93%"></div></div>
+            <div class="score-val">93% Real</div>
+          </div>
+        </div>
+      </article>
+
+      <!-- Card 10 -->
+      <article class="news-card">
+        <div class="news-card-img">
+          <span>🗳️</span>
+          <div class="news-card-img-gradient"></div>
+          <div class="news-card-rank">#10</div>
+          <div class="news-card-badge unverified">Unverified</div>
+        </div>
+        <div class="news-card-body">
+          <div class="news-card-source">Regional News</div>
+          <div class="news-card-title">Opposition party to merge ahead of state elections</div>
+          <div class="news-card-score">
+            <div class="score-bar-bg"><div class="score-bar-fill unverified" data-width="61%"></div></div>
+            <div class="score-val">61% Verified</div>
+          </div>
+        </div>
+      </article>
+
+    </div>
+  </div>
+  <div class="slider-dots" id="sliderDots"></div>
+</section>
+
+<!-- ══ MAIN LAYOUT: News List + Sidebar ══ -->
+<div id="main-layout">
+
+  <!-- News List -->
+  <section id="news-list">
+    <div class="news-list-header">
+      <div>
+        <div class="section-eyebrow" style="text-align:left;">Latest Stories</div>
+        <h2 class="section-title" style="text-align:left;margin-bottom:0;font-size:clamp(1.8rem,3vw,2.5rem);">Today's Feed</h2>
+      </div>
+      <div id="newsCategoryBar" class="category-bar" style="display:flex;gap:.5rem;flex-wrap:wrap;margin-top:.75rem"></div>
+    </div>
+
+    <!-- Live news grid from API -->
+    <div id="newsCardGrid" style="margin-bottom:2rem"></div>
+
+    <!-- Static rows below (original content) -->
+    <article class="news-row">
+      <div class="news-row-img">🏏</div>
+      <div class="news-row-content">
+        <div class="news-row-meta">
+          <span class="news-row-source">ESPNcricinfo</span>
+          <span class="news-row-dot"></span>
+          <span class="news-row-time">2h ago</span>
+        </div>
+        <div class="news-row-title">India clinches Test series with dominant Edgbaston victory</div>
+        <div class="news-row-excerpt">Team India's bowling attack dismantled England's batting lineup on day four.</div>
+      </div>
+      <div class="news-row-validity">
+        <span class="validity-badge real">Real</span>
+        <span class="validity-score">96%</span>
+      </div>
+    </article>
+
+    <!-- Row 2 -->
+    <article class="news-row">
+      <div class="news-row-img">💊</div>
+      <div class="news-row-content">
+        <div class="news-row-meta">
+          <span class="news-row-source">WhatsApp</span>
+          <span class="news-row-dot"></span>
+          <span class="news-row-time">4h ago</span>
+        </div>
+        <div class="news-row-title">"Drinking hot water with turmeric kills all viruses instantly"</div>
+        <div class="news-row-excerpt">Viral claim circulating across multiple platforms with no scientific backing.</div>
+      </div>
+      <div class="news-row-validity">
+        <span class="validity-badge fake">Fake</span>
+        <span class="validity-score">91%</span>
+      </div>
+    </article>
+
+    <!-- Row 3 -->
+    <article class="news-row">
+      <div class="news-row-img">🏙️</div>
+      <div class="news-row-content">
+        <div class="news-row-meta">
+          <span class="news-row-source">Times of India</span>
+          <span class="news-row-dot"></span>
+          <span class="news-row-time">6h ago</span>
+        </div>
+        <div class="news-row-title">Mumbai Metro Line 7 extended to Thane, commute times halved</div>
+        <div class="news-row-excerpt">The 28 km extension is expected to ease congestion on the Western Express Highway.</div>
+      </div>
+      <div class="news-row-validity">
+        <span class="validity-badge real">Real</span>
+        <span class="validity-score">88%</span>
+      </div>
+    </article>
+
+    <!-- Row 4 -->
+    <article class="news-row">
+      <div class="news-row-img">📱</div>
+      <div class="news-row-content">
+        <div class="news-row-meta">
+          <span class="news-row-source">Tech Blog</span>
+          <span class="news-row-dot"></span>
+          <span class="news-row-time">8h ago</span>
+        </div>
+        <div class="news-row-title">Apple to remove all iPhone cameras in next generation devices</div>
+        <div class="news-row-excerpt">Satirical article circulating as real news across social media platforms.</div>
+      </div>
+      <div class="news-row-validity">
+        <span class="validity-badge fake">Fake</span>
+        <span class="validity-score">99%</span>
+      </div>
+    </article>
+
+    <!-- Row 5 -->
+    <article class="news-row">
+      <div class="news-row-img">🛢️</div>
+      <div class="news-row-content">
+        <div class="news-row-meta">
+          <span class="news-row-source">Financial Times</span>
+          <span class="news-row-dot"></span>
+          <span class="news-row-time">10h ago</span>
+        </div>
+        <div class="news-row-title">OPEC+ agrees to extend production cuts through Q3 2026</div>
+        <div class="news-row-excerpt">Oil prices rose 2.3% following the announcement in Vienna.</div>
+      </div>
+      <div class="news-row-validity">
+        <span class="validity-badge real">Real</span>
+        <span class="validity-score">94%</span>
+      </div>
+    </article>
+
+    <!-- Hidden rows (shown on "Show More") -->
+    <article class="news-row hidden-row" style="display:none;">
+      <div class="news-row-img">🌡️</div>
+      <div class="news-row-content">
+        <div class="news-row-meta">
+          <span class="news-row-source">Unknown Source</span>
+          <span class="news-row-dot"></span>
+          <span class="news-row-time">12h ago</span>
+        </div>
+        <div class="news-row-title">Scientists confirm Earth will experience 5 consecutive solar eclipses in 2027</div>
+        <div class="news-row-excerpt">No such prediction exists in verified astronomical databases.</div>
+      </div>
+      <div class="news-row-validity">
+        <span class="validity-badge fake">Fake</span>
+        <span class="validity-score">97%</span>
+      </div>
+    </article>
+
+    <article class="news-row hidden-row" style="display:none;">
+      <div class="news-row-img">🎓</div>
+      <div class="news-row-content">
+        <div class="news-row-meta">
+          <span class="news-row-source">NDTV</span>
+          <span class="news-row-dot"></span>
+          <span class="news-row-time">14h ago</span>
+        </div>
+        <div class="news-row-title">CBSE announces revised Class 12 exam pattern for 2027</div>
+        <div class="news-row-excerpt">New competency-based framework reduces rote learning weightage by 30%.</div>
+      </div>
+      <div class="news-row-validity">
+        <span class="validity-badge unverified">Unverified</span>
+        <span class="validity-score">68%</span>
+      </div>
+    </article>
+
+    <!-- Show More Button -->
+    <div class="show-more-wrap">
+      <button class="btn-show-more" id="showMoreBtn" data-expanded="false">
+        <span class="show-more-label">Show More Stories</span>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+          <polyline points="6 9 12 15 18 9"/>
+        </svg>
+      </button>
+    </div>
+  </section>
+
+  <!-- ── SIDEBAR ── -->
+  <aside class="sidebar" aria-label="Sidebar">
+
+    <!-- Bookmarks -->
+    <div class="sidebar-card">
+      <div class="sidebar-card-title">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+        Bookmarks
+      </div>
+      <div class="bookmark-item">
+        <span class="bookmark-icon">🌍</span>
+        <span class="bookmark-title">UN Climate Summit emissions deal — Reuters</span>
+        <span class="bookmark-badge real" style="background:var(--green-dim);color:var(--green);">Real</span>
+      </div>
+      <div class="bookmark-item">
+        <span class="bookmark-icon">🏦</span>
+        <span class="bookmark-title">RBI holds repo rate — Bloomberg</span>
+        <span class="bookmark-badge real" style="background:var(--green-dim);color:var(--green);">Real</span>
+      </div>
+      <div class="bookmark-item">
+        <span class="bookmark-icon">⚡</span>
+        <span class="bookmark-title">Power grid cyberattack claim</span>
+        <span class="bookmark-badge unverified" style="background:var(--yellow-dim);color:#806000;">?</span>
+      </div>
+      <div class="bookmark-item">
+        <span class="bookmark-icon">🚀</span>
+        <span class="bookmark-title">Chandrayaan-4 2026 launch — ISRO</span>
+        <span class="bookmark-badge real" style="background:var(--green-dim);color:var(--green);">Real</span>
+      </div>
+    </div>
+
+    <!-- Categories -->
+    <div class="sidebar-card">
+      <div class="sidebar-card-title">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+        Categories
+      </div>
+      <div class="category-item">
+        <span class="category-emoji">🏛️</span>
+        <span class="category-label">Politics</span>
+        <span class="category-count">142</span>
+        <svg class="cat-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
+      </div>
+      <div class="category-item">
+        <span class="category-emoji">🏥</span>
+        <span class="category-label">Health & Medicine</span>
+        <span class="category-count">98</span>
+        <svg class="cat-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
+      </div>
+      <div class="category-item">
+        <span class="category-emoji">🌍</span>
+        <span class="category-label">Climate & Environment</span>
+        <span class="category-count">67</span>
+        <svg class="cat-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
+      </div>
+      <div class="category-item">
+        <span class="category-emoji">💻</span>
+        <span class="category-label">Technology</span>
+        <span class="category-count">211</span>
+        <svg class="cat-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
+      </div>
+      <div class="category-item">
+        <span class="category-emoji">💰</span>
+        <span class="category-label">Business & Finance</span>
+        <span class="category-count">185</span>
+        <svg class="cat-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
+      </div>
+      <div class="category-item">
+        <span class="category-emoji">🏏</span>
+        <span class="category-label">Sports</span>
+        <span class="category-count">94</span>
+        <svg class="cat-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
+      </div>
+    </div>
+
+    <!-- Quiz -->
+    <div class="sidebar-card quiz-card">
+      <div class="sidebar-card-title">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        Daily Quiz
+      </div>
+      <p class="quiz-question">Which of these headlines is most likely to be fake news?</p>
+      <div class="quiz-options">
+        <button class="quiz-option" data-correct="false">Scientists discover new exoplanet with water</button>
+        <button class="quiz-option" data-correct="true">"Miracle fruit eliminates diabetes in 3 days"</button>
+        <button class="quiz-option" data-correct="false">Central bank raises interest rates by 0.25%</button>
+      </div>
+      <div class="quiz-streak">
+        <span class="streak-fire">🔥</span>
+        <strong>7-day streak</strong>
+        <span>— keep it up!</span>
+      </div>
+    </div>
+
+  </aside>
+</div>
+
+<!-- ══ BENTO FEATURES ══ -->
+<section id="features">
+  <div class="section-eyebrow">What You Get</div>
+  <h2 class="section-title">Built for <span class="hl">Truth</span></h2>
+
+  <div class="bento">
+    <!-- Span 2 -->
+    <div class="bento-card light span2">
+      <div class="bento-icon">🧠</div>
+      <div class="bento-card-title">Adaptive ML Engine</div>
+      <div class="bento-card-desc">Our model cross-references 200+ trusted global sources, analyzes author history, sentiment bias, and language patterns — retrained weekly on the latest misinformation tactics.</div>
+      <div class="mock-pulse">
+        <div class="pulse-bar"></div>
+        <div class="pulse-bar"></div>
+        <div class="pulse-bar"></div>
+        <div class="pulse-bar" style="flex:.4;"></div>
+      </div>
+    </div>
+
+    <div class="bento-card dark">
+      <div class="bento-icon">⚡</div>
+      <div class="bento-card-title">2-Second Results</div>
+      <div class="bento-card-desc">Paste any URL or headline. Get a credibility score before you even finish reading.</div>
+      <div style="margin-top:auto">
+        <div class="stat-num">97.4%</div>
+        <div class="stat-label">Detection Accuracy</div>
+      </div>
+    </div>
+
+    <div class="bento-card light">
+      <div class="bento-icon">💬</div>
+      <div class="bento-card-title">Ask the AI</div>
+      <div class="bento-card-desc">Curio's built-in assistant explains why an article is flagged and what to look for.</div>
+      <div class="code-snippet">
+        <div class="code-line"><span class="code-key">you:</span> <span class="code-str">"why is this fake?"</span></div>
+        <div class="code-line"><span class="code-key">curio:</span> <span class="code-val">"3 red flags found…"</span></div>
+      </div>
+    </div>
+
+    <div class="bento-card yellow">
+      <div class="bento-icon">🎯</div>
+      <div class="bento-card-title">Bias Detection</div>
+      <div class="bento-card-desc">Surfaces hidden political, emotional, and commercial bias in every article you read.</div>
+    </div>
+
+    <div class="bento-card dark">
+      <div class="bento-icon">👥</div>
+      <div class="bento-card-title">Community Reports</div>
+      <div class="bento-card-desc">50,000+ users flagging misinformation daily. Community signals feed back into the model.</div>
+      <div class="avatar-stack">
+        <div class="avatar" style="background:#7a1a5a;">AK</div>
+        <div class="avatar" style="background:#1a4a7a;">RJ</div>
+        <div class="avatar" style="background:#2a7a1a;">MM</div>
+        <div class="avatar-count">+50k</div>
+      </div>
+    </div>
+
+    <div class="bento-card light span2">
+      <div class="bento-icon">🏆</div>
+      <div class="bento-card-title">Verified Reports & History</div>
+      <div class="bento-card-desc">Every check you run is saved. Share your fact-check history as a public credibility record — prove you're the kind of person who verifies before sharing.</div>
+      <div class="mock-pulse" style="gap:6px;">
+        <div class="pulse-bar" style="background:var(--green);height:10px;animation-delay:.1s;"></div>
+        <div class="pulse-bar" style="background:var(--yellow);height:10px;animation-delay:.3s;flex:.7;"></div>
+        <div class="pulse-bar" style="background:var(--red);height:10px;animation-delay:.5s;flex:.3;"></div>
+        <div class="pulse-bar" style="background:#444;height:10px;animation-delay:.7s;flex:.5;"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ HOW IT WORKS ══ -->
+<div id="how">
+  <div class="how-sticky">
+    <div class="how-sticky-title">How<br>It<br><span>Works</span></div>
+    <p class="how-sticky-sub">Three steps from reading a headline to knowing the truth.</p>
+  </div>
+  <div class="how-steps">
+    <div class="how-step">
+      <div class="step-num">01</div>
+      <div class="step-content">
+        <div class="step-title">Paste or Search</div>
+        <p class="step-desc">Drop a URL, paste a headline, or type keywords. Curio accepts any format — articles, screenshots, social media posts, or WhatsApp forwards.</p>
+      </div>
+    </div>
+    <div class="how-step">
+      <div class="step-num">02</div>
+      <div class="step-content">
+        <div class="step-title">AI Analyzes in Real Time</div>
+        <p class="step-desc">Our ML model checks 12+ signals: source credibility, author history, publication date accuracy, cross-reference with trusted outlets, and emotional language patterns.</p>
+      </div>
+    </div>
+    <div class="how-step">
+      <div class="step-num">03</div>
+      <div class="step-content">
+        <div class="step-title">Get Your Verdict</div>
+        <p class="step-desc">A clear credibility score with human-readable explanation. Share the verified result or save it to your fact-check history.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ DASHBOARD ══ -->
+<section id="dashboard">
+  <div class="section-eyebrow" style="text-align:center;margin-bottom:10px;">Your Account</div>
+  <h2 class="section-title">Dashboard</h2>
+
+  <div class="dashboard-card">
+    <div class="dashboard-header">
+      <!-- Avatar -->
+      <div class="dash-avatar">
+        AK
+        <div class="dash-avatar-ring"></div>
+      </div>
+
+      <!-- User Info -->
+      <div class="dash-info">
+        <div class="dash-name">Anika Kapoor</div>
+        <div class="dash-email">anika.kapoor@gmail.com</div>
+        <div class="dash-plan">⭐ Pro Member</div>
+      </div>
+
+      <!-- Actions -->
+      <div class="dash-actions">
+        <button class="btn-edit">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+          Edit Profile
+        </button>
+        <button class="btn-logout" id="logoutBtn">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+          Log Out
+        </button>
+      </div>
+    </div>
+
+    <!-- Stats -->
+    <div class="dash-stats">
+      <div class="dash-stat">
+        <div class="dash-stat-num">247</div>
+        <div class="dash-stat-label">Articles Checked</div>
+      </div>
+      <div class="dash-stat">
+        <div class="dash-stat-num">31</div>
+        <div class="dash-stat-label">Fake News Caught</div>
+      </div>
+      <div class="dash-stat">
+        <div class="dash-stat-num">7🔥</div>
+        <div class="dash-stat-label">Day Streak</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ TESTIMONIALS ══ -->
+<section id="testimonials">
+  <div class="section-eyebrow">What People Say</div>
+  <h2 class="section-title">Real <span class="hl">Impact</span></h2>
+
+  <div class="testi-grid">
+    <div class="testi-card light">
+      <div class="testi-stars">★★★★★</div>
+      <p class="testi-body">"I'm a journalist and Curio has become my go-to before publishing. It caught three fabricated quotes in a viral story that my whole team missed."</p>
+      <div class="testi-footer">
+        <div class="testi-avatar">AK</div>
+        <div>
+          <div class="testi-name">Anika Kapoor</div>
+          <div class="testi-role">Senior Reporter · The Hindu, Bengaluru</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="testi-card dark">
+      <div class="testi-stars">★★★★★</div>
+      <p class="testi-body">"I sent a 'viral health tip' to my whole family before checking. Now I verify every single message on Curio first. Saved me a lot of embarrassment."</p>
+      <div class="testi-footer">
+        <div class="testi-avatar" style="background:#7a1a5a;color:#fff;">RM</div>
+        <div>
+          <div class="testi-name">Rohan Mehta</div>
+          <div class="testi-role">Software Engineer · IIT Bombay Alum</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="testi-card light">
+      <div class="testi-stars">★★★★★</div>
+      <p class="testi-body">"The browser extension is genius. It flags suspicious articles as I browse — I don't even have to think about it anymore. It's like a fact-check guardian."</p>
+      <div class="testi-footer">
+        <div class="testi-avatar">PJ</div>
+        <div>
+          <div class="testi-name">Priya Joshi</div>
+          <div class="testi-role">Media Researcher · Mumbai</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ FINAL CTA ══ -->
+<section id="cta">
+  <div class="cta-bg-text top">CURIO</div>
+  <div class="cta-bg-text bottom">TRUTH</div>
+  <div class="cta-inner">
+    <h2 class="cta-headline">Stop Sharing.<br>Start Verifying.</h2>
+    <p class="cta-sub">Join 50,000+ people who verify before they share. Free forever plan available.</p>
+    <div class="cta-form">
+      <input class="cta-input" type="email" placeholder="your@email.com" aria-label="Email address" />
+      <button class="cta-btn">Get Access</button>
+    </div>
+    <p style="font-size:.74rem;color:rgba(15,21,18,.45);">Free forever plan · No credit card required · Unsubscribe anytime</p>
+  </div>
+</section>
+
+<!-- ══ FOOTER ══ -->
+<footer>
+  <div class="footer-top">
+    <div class="footer-brand">
+      <a href="#" class="footer-logo">Curio<span>.</span></a>
+      <p class="footer-tagline">AI-powered fake news detection for a more truthful internet.</p>
+      <div class="footer-newsletter">
+        <input type="email" placeholder="Weekly digest…" aria-label="Newsletter email" />
+        <button>Subscribe</button>
+      </div>
+    </div>
+
+    <div class="footer-col">
+      <div class="footer-col-title">Product</div>
+      <ul>
+        <li><a href="#features">Features</a></li>
+        <li><a href="#how">How It Works</a></li>
+        <li><a href="#">Browser Extension</a></li>
+        <li><a href="#">Mobile App</a></li>
+        <li><a href="#">Pricing</a></li>
+      </ul>
+    </div>
+
+    <div class="footer-col">
+      <div class="footer-col-title">Resources</div>
+      <ul>
+        <li><a href="#">Blog</a></li>
+        <li><a href="#">Documentation</a></li>
+        <li><a href="#">API Access</a></li>
+        <li><a href="#testimonials">Reviews</a></li>
+        <li><a href="#">Media Kit</a></li>
+      </ul>
+    </div>
+
+    <div class="footer-col">
+      <div class="footer-col-title">Company</div>
+      <ul>
+        <li><a href="#">About</a></li>
+        <li><a href="#">Careers</a></li>
+        <li><a href="#">Contact</a></li>
+        <li><a href="#">Privacy Policy</a></li>
+        <li><a href="#">Terms of Service</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="footer-bottom">
+    <div class="footer-copy">© 2026 Curio Technologies Pvt. Ltd. — Built with ❤️ in India</div>
+    <div class="footer-social">
+      <a href="#" class="social-link" aria-label="Twitter">𝕏</a>
+      <a href="#" class="social-link" aria-label="LinkedIn">in</a>
+      <a href="#" class="social-link" aria-label="Instagram">ig</a>
+      <a href="#" class="social-link" aria-label="GitHub">gh</a>
+    </div>
+  </div>
+</footer>
+
+<!-- ══ LOGIN MODAL ══ -->
+<div id="login-overlay">
+  <div class="login-backdrop" onclick="closeLogin()"></div>
+  <div class="login-panel">
+    <!-- Left: illustration -->
+    <div class="login-left">
+      <div class="blob b1"></div>
+      <div class="blob b2"></div>
+      <div class="blob b3"></div>
+      <div class="blob b4"></div>
+      <div class="blob b5"></div>
+      <div class="deco-lines"></div>
+
+      <div class="chat-bubbles">
+        <div class="bubble b-left">
+          <div class="bubble-dot"></div><div class="bubble-dot"></div><div class="bubble-dot"></div>
+          <div class="bubble-dot"></div><div class="bubble-dot"></div><div class="bubble-dot"></div>
+        </div>
+        <div class="bubble b-right right">
+          <div class="bubble-dot"></div><div class="bubble-dot"></div><div class="bubble-dot"></div>
+          <div class="bubble-dot"></div><div class="bubble-dot"></div>
+        </div>
+      </div>
+
+      <div class="login-illustration">
+        <svg class="skeleton-svg" viewBox="0 0 130 160" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <ellipse cx="65" cy="30" rx="22" ry="24" fill="#f0ece0" stroke="#c5bfa8" stroke-width="1.5"/>
+          <ellipse cx="57" cy="28" rx="7" ry="8" fill="#2a2a3a" opacity=".85"/>
+          <ellipse cx="73" cy="28" rx="7" ry="8" fill="#2a2a3a" opacity=".85"/>
+          <path d="M55 42 Q65 48 75 42" stroke="#c5bfa8" stroke-width="1.5" stroke-linecap="round"/>
+          <rect x="53" y="48" width="24" height="8" rx="3" fill="#f0ece0" stroke="#c5bfa8" stroke-width="1.2"/>
+          <rect x="61" y="54" width="8" height="10" fill="#f0ece0" stroke="#c5bfa8" stroke-width="1"/>
+          <rect x="45" y="64" width="40" height="38" rx="6" fill="none" stroke="#c5bfa8" stroke-width="1.5"/>
+          <line x1="65" y1="64" x2="65" y2="102" stroke="#c5bfa8" stroke-width="1.5"/>
+          <line x1="45" y1="70" x2="28" y2="90" stroke="#c5bfa8" stroke-width="3" stroke-linecap="round"/>
+          <line x1="28" y1="90" x2="18" y2="112" stroke="#c5bfa8" stroke-width="2.5" stroke-linecap="round"/>
+          <line x1="85" y1="70" x2="102" y2="90" stroke="#c5bfa8" stroke-width="3" stroke-linecap="round"/>
+          <line x1="102" y1="90" x2="112" y2="112" stroke="#c5bfa8" stroke-width="2.5" stroke-linecap="round"/>
+          <ellipse cx="65" cy="108" rx="22" ry="10" fill="none" stroke="#c5bfa8" stroke-width="1.5"/>
+          <line x1="53" y1="116" x2="46" y2="140" stroke="#c5bfa8" stroke-width="2.5" stroke-linecap="round"/>
+          <line x1="77" y1="116" x2="84" y2="140" stroke="#c5bfa8" stroke-width="2.5" stroke-linecap="round"/>
+          <rect x="30" y="142" width="70" height="12" rx="3" fill="#888" stroke="#666" stroke-width="1"/>
+          <rect x="35" y="132" width="60" height="14" rx="2" fill="#aaa" stroke="#888" stroke-width="1"/>
+        </svg>
+      </div>
+
+      <div class="login-illus-headline">Verify Truth.<br>Build Trust.</div>
+      <div class="login-illus-sub">Join 50,000+ readers who fact-check before they share.</div>
+    </div>
+
+    <!-- Right: forms -->
+    <div class="login-right">
+      <button class="login-close" onclick="closeLogin()" aria-label="Close">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+          <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+      </button>
+
+      <div class="login-logo">
+        <div class="logo-dot"></div>
+        <div class="logo-dot yellow"></div>
+        <div class="logo-dot border"></div>
+        <div class="logo-dot"></div>
+      </div>
+
+      <!-- Tab switcher -->
+      <div class="login-tabs">
+        <button class="login-tab active" data-tab="login">Login</button>
+        <button class="login-tab" data-tab="register">Register</button>
+      </div>
+
+      <!-- LOGIN PANEL -->
+      <div id="loginPanel" class="auth-panel">
+        <div class="login-title">Welcome Back</div>
+        <p class="login-subtitle">Sign in to your Curio account</p>
+
+        <button class="btn-google" id="btnGoogleLogin" type="button">
+          <svg width="17" height="17" viewBox="0 0 48 48">
+            <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
+            <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
+            <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/>
+            <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
+          </svg>
+          Continue with Google
+        </button>
+
+        <div class="divider">or sign in with email</div>
+
+        <form id="loginForm">
+          <div class="form-field">
+            <label class="form-label">Email</label>
+            <input id="loginEmail" class="form-input" type="email" name="email" placeholder="mail@example.com" autocomplete="email" required />
+          </div>
+
+          <div class="form-field">
+            <label class="form-label">Password</label>
+            <input id="loginPassword" class="form-input" type="password" name="password" placeholder="••••••••••" autocomplete="current-password" required />
+          </div>
+
+          <div class="form-row">
+            <label class="form-check">
+              <input type="checkbox" checked />
+              <span>Remember Me</span>
+            </label>
+            <a href="#" class="form-forgot">Forgot Password?</a>
+          </div>
+
+          <p id="loginError" class="form-error"></p>
+          <button type="submit" class="btn-login-submit">Login to Curio</button>
+          <p class="login-signup">Not registered yet? <a href="#" onclick="switchTab('register')">Create account</a></p>
+        </form>
+      </div>
+
+      <!-- REGISTER PANEL -->
+      <div id="registerPanel" class="auth-panel" style="display:none">
+        <div class="login-title">Create Account</div>
+        <p class="login-subtitle">Join Curio and verify before you share</p>
+
+        <button class="btn-google" id="btnGoogleRegister" type="button">
+          <svg width="17" height="17" viewBox="0 0 48 48">
+            <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
+            <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
+            <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/>
+            <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
+          </svg>
+          Sign up with Google
+        </button>
+
+        <div class="divider">or register with email</div>
+
+        <form id="registerForm">
+          <div class="form-field">
+            <label class="form-label">Full Name</label>
+            <input id="regName" class="form-input" name="name" type="text" placeholder="Your full name" autocomplete="name" required />
+          </div>
+
+          <div class="form-field">
+            <label class="form-label">Email</label>
+            <input id="regEmail" class="form-input" name="email" type="email" placeholder="mail@example.com" autocomplete="email" required />
+          </div>
+
+          <div class="form-field">
+            <label class="form-label">Password</label>
+            <input id="regPassword" class="form-input" name="password" type="password" placeholder="Min 6 characters" autocomplete="new-password" required minlength="6" />
+          </div>
+
+          <div class="form-field">
+            <label class="form-label">Phone <span class="form-label-opt">(optional)</span></label>
+            <input id="regPhone" class="form-input" name="phone" type="tel" placeholder="+91 XXXXXXXXXX" autocomplete="tel" />
+          </div>
+
+          <p id="registerError" class="form-error"></p>
+          <button type="submit" class="btn-login-submit">Create Account</button>
+          <p class="login-signup">Already have an account? <a href="#" onclick="switchTab('login')">Sign in</a></p>
+        </form>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ══ CHATBOT FAB ══ -->
+<div id="chatbot-fab">
+  <!-- Chat window -->
+  <div class="chatbot-window" id="chatbotWindow">
+    <div class="chatbot-header">
+      <div class="chatbot-avatar">🤖</div>
+      <div>
+        <div class="chatbot-name">Curio AI</div>
+        <div class="chatbot-status">Online · Fact-checking assistant</div>
+      </div>
+      <button class="chatbot-close" id="chatbotClose" aria-label="Close chat">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+          <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+      </button>
+    </div>
+
+    <div class="chatbot-messages" id="chatMessages">
+      <div class="chat-msg bot">👋 Hi! I'm Curio AI. I can summarize any article in today's feed, explain credibility scores, or answer your fact-checking questions.</div>
+      <div class="chat-msg bot suggestions">
+        <span class="suggestion-label">Try asking:</span>
+        <button class="suggestion-btn" onclick="askCurio('Summarize the top news today')">📰 Summarize top news</button>
+        <button class="suggestion-btn" onclick="askCurio('Which articles are fake or misleading?')">🔍 Which articles are fake?</button>
+        <button class="suggestion-btn" onclick="askCurio('What is the most credible story today?')">✅ Most credible story</button>
+      </div>
+    </div>
+
+    <div class="chatbot-input-row">
+      <input class="chatbot-input" id="chatInput" type="text" placeholder="Ask me anything…" aria-label="Chat input" />
+      <button class="chatbot-send" id="chatSend" aria-label="Send message">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+          <line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- Trigger button -->
+  <button class="chatbot-bubble-trigger" id="chatbotTrigger" aria-label="Open chat">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+    </svg>
+    <span class="chatbot-notif"></span>
+  </button>
+</div>
+
+<!-- ══ JS ══ -->
+<script src="js/nav.js"></script>
+<script src="js/login.js"></script>
+<script src="js/animations.js"></script>
+<script src="js/api.js"></script>
+
+<!-- Auth Toast -->
+<div id="authToast" style="position:fixed;bottom:2rem;left:50%;transform:translateX(-50%);background:#1a1a2e;color:#fff;padding:.75rem 1.5rem;border-radius:2rem;font-size:.9rem;opacity:0;transition:opacity .4s;pointer-events:none;z-index:9999"></div>
+<style>
+  #authToast.show{opacity:1}
+  #logoutBtn{display:none;background:transparent;border:1px solid rgba(255,255,255,.2);color:inherit;padding:.35rem .9rem;border-radius:2rem;cursor:pointer;font-size:.85rem}
+  #logoutBtn:hover{background:rgba(255,255,255,.1)}
+  .news-card-img{height:160px;background-size:cover;background-position:center;border-radius:8px 8px 0 0;position:relative}
+  .news-validity{position:absolute;top:.5rem;right:.5rem;font-size:.72rem;padding:.25rem .6rem;border-radius:2rem;font-weight:600}
+  .valid-high{background:#dcfce7;color:#166534}.valid-mid{background:#fef9c3;color:#854d0e}.valid-low{background:#fee2e2;color:#991b1b}
+  .news-card{border-radius:8px;overflow:hidden;background:var(--card-bg,#fff);box-shadow:0 2px 12px rgba(0,0,0,.08)}
+  .news-card-body{padding:1rem}.news-cat-tag{font-size:.7rem;font-weight:700;text-transform:uppercase;opacity:.6}
+  .news-card-title{font-size:1rem;font-weight:700;margin:.4rem 0}.news-card-summary{font-size:.85rem;opacity:.7;margin-bottom:.75rem}
+  .news-card-meta{display:flex;justify-content:space-between;align-items:center;font-size:.8rem;opacity:.6}
+  .btn-bookmark{background:none;border:none;cursor:pointer;font-size:1rem}
+  .cat-btn{padding:.35rem .9rem;border-radius:2rem;border:1px solid rgba(0,0,0,.15);background:transparent;cursor:pointer;font-size:.85rem}
+  .cat-btn.active{background:#0f0f1a;color:#fff}
+  #newsCardGrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1.25rem;padding:1rem 0}
+  .chat-msg.loading{opacity:.6;font-style:italic}
+</style>
+</body>
+</html>
