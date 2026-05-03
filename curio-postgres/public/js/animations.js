@@ -209,10 +209,9 @@ function openChat() {
 
 function closeChat() {
   if (!chatWindow) return;
-  gsap.to(chatWindow, {
-    scale: .88, opacity: 0, duration: .22, ease: 'power2.in',
-    onComplete: () => { chatWindow.style.display = 'none'; chatWindow.style.cssText = ''; }
-  });
+  chatWindow.classList.remove('open');
+  chatWindow.style.display = 'none';
+  if (chatTrigger) chatTrigger.style.display = 'flex';
 }
 
 if (chatTrigger) chatTrigger.addEventListener('click', openChat);
