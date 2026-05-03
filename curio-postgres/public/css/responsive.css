@@ -1,0 +1,97 @@
+/* ══════════════════════════════
+   RESPONSIVE
+   curio/css/responsive.css
+══════════════════════════════ */
+
+/* ── Tablet ── */
+@media (max-width: 1024px) {
+  .bento {
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: auto;
+  }
+  .bento-card.span2 { grid-column: span 2; }
+
+  #main-layout { grid-template-columns: 1fr; }
+  .sidebar { position: static; }
+
+  .footer-top { grid-template-columns: 1fr 1fr; gap: 32px; }
+}
+
+/* ── Mobile ── */
+@media (max-width: 768px) {
+  :root {
+    --space-lg: 24px;
+    --space-xl: 60px;
+  }
+
+  /* Nav */
+  .nav-links    { display: none; }
+  .nav-greeting { display: none; }
+  .nav-search   { display: none; }
+  .nav-divider  { display: none; }
+  #card-nav-container { width: calc(100% - 28px); top: 12px; }
+  .nav-right-cluster { gap: 8px; }
+
+  /* Hero */
+  #hero { padding: 110px 20px 80px; }
+  .hero-headline { font-size: clamp(2.6rem, 12vw, 4rem); }
+  .hero-form { max-width: 100%; }
+  .hero-form-btn { padding: 0 18px; }
+  .hero-trust { display: none; }
+
+  /* Problem / Solution */
+  #problem-solution { grid-template-columns: 1fr; }
+  .ps-half { padding: 56px 28px; }
+
+  /* News slider */
+  .news-card { width: 250px; }
+  .news-trending-header { padding: 0 var(--space-lg); }
+  .news-slider-viewport { padding: 8px var(--space-lg) 16px; }
+
+  /* News list */
+  #news-list { padding: var(--space-xl) var(--space-lg); }
+  .news-row { grid-template-columns: 64px 1fr; }
+  .news-row-validity { display: none; }
+  .news-row-img { width: 64px; height: 52px; }
+
+  /* Bento */
+  .bento { grid-template-columns: 1fr; }
+  .bento-card.span2 { grid-column: span 1; }
+
+  /* How It Works */
+  #how { grid-template-columns: 1fr; gap: 36px; padding: 60px 20px; }
+  .how-sticky { position: static; }
+  .step-num { font-size: 3.5rem; width: 60px; }
+
+  /* Testimonials */
+  .testi-grid { grid-template-columns: 1fr; }
+  .testi-card.dark { transform: none; }
+  .testi-card.dark:hover { transform: translateY(-4px); }
+
+  /* Login modal */
+  .login-panel { grid-template-columns: 1fr; max-width: 420px; }
+  .login-left { display: none; }
+  .login-right { padding: 40px 28px; }
+
+  /* Dashboard */
+  .dashboard-header { flex-wrap: wrap; }
+  .dash-stats { grid-template-columns: repeat(2, 1fr); }
+
+  /* Chatbot */
+  .chatbot-window { width: calc(100vw - 32px); height: 460px; }
+  #chatbot-fab { bottom: 20px; right: 16px; }
+
+  /* Footer */
+  footer { padding: 48px var(--space-lg) 32px; }
+  .footer-top { grid-template-columns: 1fr; gap: 28px; }
+  .footer-bottom { flex-direction: column; text-align: center; gap: 12px; }
+
+  /* Sidebar */
+  .sidebar { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+}
+
+@media (max-width: 480px) {
+  .sidebar { grid-template-columns: 1fr; }
+  .dash-actions { flex-direction: column; width: 100%; }
+  .btn-edit, .btn-logout { justify-content: center; }
+}
