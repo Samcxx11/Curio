@@ -33,7 +33,7 @@ const recommend_user = asyncHandler(async (req, res) => {
         // Get recent news IDs
         const recentNewsResult = await client.query(
             `SELECT NID FROM news
-             WHERE published_at >= NOW() - INTERVAL '6 hours'
+             WHERE created_at >= NOW() - INTERVAL '6 hours'
              ORDER BY published_at DESC`
         );
         console.log("Recent news IDs:", recentNewsResult);
@@ -84,7 +84,7 @@ const recommend_user = asyncHandler(async (req, res) => {
         }
 
     } catch (err) {
-        console.error("Recommendation error:", err);
+        console.log("Recommendation error:", err);
         throw new ApiError(500, err.message || "Error generating recommendations");
     } finally {
         if (client) client.release();

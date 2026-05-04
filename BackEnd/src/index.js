@@ -5,6 +5,7 @@ import cookieParser from 'cookie-parser';
 import {startNewsCron} from "./services/cron.services.js";
 import recommend from "./routes/recommendation.route.js";
 import analyze_url from "./routes/analyze_url.route.js";
+import user from "./routes/user.route.js";
 
 const app = express();
 
@@ -19,6 +20,8 @@ app.use(express.static('public'));
 
 app.use(cookieParser());
 
+app.use("/api/user", user);
+//https://localhost:3000/api/user/embedding/new
 
 app.use("/api/recommendation", recommend);
 //https://localhost:3000/api/recommendation

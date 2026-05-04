@@ -96,14 +96,16 @@ router.post('/bookmark/:id', authMiddleware, async (req, res) => {
 router.get('/headlines', async (req, res) => {
   console.log("Fetching headlines...");
   const apiKey = process.env.NEWS_API_KEY;
+  console.log("Using NEWS_API_KEY:", apiKey);
   if (!apiKey) return res.status(503).json({ message: 'NEWS_API_KEY not set' });
 
   try {
+    console.log("Sending request to NewsAPI...");
     const response = await fetch(
       `https://newsapi.org/v2/top-headlines?language=en&pageSize=10&apiKey=${apiKey}`
     );
     const data = await response.json();
-
+    console.log("Received response from NewsAPI:", data);
     if (data.status !== 'ok') {
       return res.status(500).json({ message: data.message || 'NewsAPI error' });
     }

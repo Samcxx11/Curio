@@ -198,74 +198,104 @@ async function loadHeadlines() {
 //------------- Recommending news for user
 async function loadRecommendations() {
     const token = getToken();
-    if (!token) return; // user not logged in, skip
+    const user = getUser();
+    if (!token || !user) return;
 
     const container = document.getElementById('newsCardGrid');
     if (!container) return;
 
-    // Show skeleton while loading
-    container.innerHTML = Array(4).fill(`
-        <div class="news-row" style="opacity:.4;pointer-events:none;">
-            <div class="news-row-img" style="background:#eee;border-radius:8px;"></div>
+    // skeleton — match news-row layout
+    container.innerHTML = Array(5).fill(`
+        <div class="news-row" style="opacity:.35;pointer-events:none;">
+            <div class="news-row-img" style="background:var(--f8-2);border-radius:var(--radius-sm);"></div>
             <div class="news-row-content">
-                <div style="height:10px;background:#eee;border-radius:4px;width:40%;margin-bottom:8px;"></div>
-                <div style="height:14px;background:#eee;border-radius:4px;margin-bottom:6px;"></div>
-                <div style="height:12px;background:#eee;border-radius:4px;width:70%;"></div>
+                <div style="height:9px;background:var(--f8-2);border-radius:4px;width:35%;margin-bottom:10px;"></div>
+                <div style="height:13px;background:var(--f8-2);border-radius:4px;margin-bottom:7px;"></div>
+                <div style="height:11px;background:var(--f8-2);border-radius:4px;width:65%;"></div>
             </div>
         </div>
     `).join('');
 
     try {
-        const res = await fetch('http://localhost:3000/api/recommendation', {
+        // go through port 5000 which handles auth properly
+        const res = await fetch('/api/news/recommendations', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${token}`
-            },
-            body: JSON.stringify({ uid: getUser()?.id })
+            }
         });
-        console.log(res);
+
+        if (!res.ok) {
+            const data = await res.json().catch(() => ({}));
+            throw new Error(data.message || `Error ${res.status}`);
+        }
 
         const data = await res.json();
-
-        if (!res.ok) throw new Error(data.message || 'Failed to load recommendations');
-
         const news = data.data;
 
         if (!news || news.length === 0) {
             container.innerHTML = `
-                <p style="color:rgba(15,21,18,.4);font-size:.88rem;padding:1rem 0;">
-                    No recommendations yet. Read some articles to get started.
-                </p>`;
+                <div style="padding:2rem 0;text-align:center;">
+                    <div style="font-size:2rem;margin-bottom:12px;">📭</div>
+                    <div style="font-size:.92rem;color:var(--text-muted);">No recommendations yet.</div>
+                    <div style="font-size:.82rem;color:var(--text-muted);margin-top:4px;">
+                        Read some articles to personalise your feed.
+                    </div>
+                </div>`;
             return;
         }
 
-        container.innerHTML = news.map(item => `
-            <article class="news-row" onclick="window.open('${item.url}','_blank')" style="cursor:pointer;">
-                <div class="news-row-img">📰</div>
-                <div class="news-row-content">
-                    <div class="news-row-meta">
-                        <span class="news-row-source">${item.source || 'Unknown'}</span>
-                        <span class="news-row-dot"></span>
-                        <span class="news-row-time">
-                            ${item.published_at
-                                ? new Date(item.published_at).toLocaleDateString('en-IN', { day:'numeric', month:'short' })
-                                : ''}
-                        </span>
+        // render as news-row list — matches existing static rows style
+        container.style.display = 'block'; // override the grid style
+        container.innerHTML = news.map(item => {
+            const timeAgo = item.published_at
+                ? new Date(item.published_at).toLocaleDateString('en-IN', { day:'numeric', month:'short' })
+                : '';
+            const source = item.source || item.s_name || 'Unknown';
+
+            return `
+                <article class="news-row" 
+                    onclick="window.open('${item.url}','_blank')" 
+                    style="cursor:pointer;">
+                    <div class="news-row-img">📰</div>
+                    <div class="news-row-content">
+                        <div class="news-row-meta">
+                            <span class="news-row-source">${source}</span>
+                            <span class="news-row-dot"></span>
+                            <span class="news-row-time">${timeAgo}</span>
+                        </div>
+                        <div class="news-row-title">${item.title}</div>
                     </div>
-                    <div class="news-row-title">${item.title}</div>
-                </div>
-            </article>
-        `).join('');
+                    <div class="news-row-validity">
+                        <span style="
+                            font-size:.68rem;font-weight:700;letter-spacing:.06em;
+                            text-transform:uppercase;padding:4px 10px;
+                            border-radius:var(--radius-pill);
+                            background:var(--f8);color:var(--text-muted);
+                        ">For You</span>
+                    </div>
+                </article>
+            `;
+        }).join('');
+
+        // hide static dummy rows + show more button
+        document.querySelectorAll('#news-list .news-row:not(#newsCardGrid .news-row), #news-list .hidden-row')
+            .forEach(row => row.style.display = 'none');
+        document.querySelector('.show-more-wrap')?.style.setProperty('display', 'none');
 
     } catch (err) {
         console.error('Recommendation error:', err);
+        container.style.display = 'block';
         container.innerHTML = `
-            <p style="color:rgba(15,21,18,.4);font-size:.88rem;padding:1rem 0;">
-                Could not load recommendations. ${err.message}
-            </p>`;
+            <div style="padding:1.5rem 0;display:flex;align-items:center;gap:10px;">
+                <span style="font-size:1.2rem;">⚠️</span>
+                <span style="font-size:.88rem;color:var(--text-muted);">
+                    Could not load recommendations — ${err.message}
+                </span>
+            </div>`;
     }
-} 
+}
 
 
 
@@ -605,6 +635,20 @@ async function checkOAuthStatus() {
   }
 }
 
+const UpdateRecommendations =async () => {
+  const token = getToken();
+  if (!token) return; // user not logged in, skip
+  await fetch('http://localhost:3000/api/recommendation', {
+      method: 'POST',
+      headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+      },
+      body: JSON.stringify({ uid: getUser()?.id })
+  });
+}
+
+
 // ── Boot ──────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
   pickupOAuthToken();
@@ -613,6 +657,7 @@ document.addEventListener('DOMContentLoaded', () => {
   wireChatbot();
   checkOAuthStatus();
   loadCategories();
+  UpdateRecommendations();
   loadNews();
   loadHeadlines();
   loadRecommendations();

@@ -50,28 +50,14 @@ const newUserEmbedding = asyncHandler(async (req, res) => {
 });
 
 const updateUserEmbedding = asyncHandler(async (req, res) => {
-    const userID = req.user.uid;
-    const newsID = req.body.news;
+    const userID = req.body.uid;
+    const news = req.body.news;
     if(news.length === 0) {
         throw new ApiError(400, "News data is required for embedding calculation");
     }
     let client;
     try {
         client = await pool.connect();
-        const newsQuery = `
-            SELECT embed
-            FROM news_embeddings
-            WHERE NID = $1
-        `;
-        const newsResult = await client.query(
-            newsQuery, 
-            [newsID]
-        );
-        if (newsResult.rows.length === 0) {
-            throw new ApiError(404, "No embedding found for the provided news ID");
-        }
-        const newsEmbedding = newsResult.rows[0].embed;
-        
         const userEmbeddingQuery = `
             SELECT embed
             FROM user_embeddings
@@ -85,16 +71,34 @@ const updateUserEmbedding = asyncHandler(async (req, res) => {
             throw new ApiError(404, "User embedding not found");
         }
         const userEmbedding = userEmbeddingResult.rows[0].embed;
-        const alpha = 0.2;
-        const updatedEmbedding = normalize(userEmbedding.map((val, idx) => {
-            return alpha * val + (1 - alpha) * newsEmbedding[idx];
-        }));
-        
-        const updateQuery = `
-            UPDATE user_embeddings
-            SET embed = $1
-            WHERE uid = $2
-        `;
+
+        for(const item of news){
+            const newsID = item.nid;
+            const newsQuery = `
+                SELECT embed
+                FROM news_embeddings
+                WHERE NID = $1
+            `;
+            const newsResult = await client.query(
+                newsQuery, 
+                [newsID]
+            );
+            if (newsResult.rows.length === 0) {
+                throw new ApiError(404, "No embedding found for the provided news ID");
+            }
+            const newsEmbedding = newsResult.rows[0].embed;
+            
+            const alpha = 0.2;
+            const updatedEmbedding = normalize(userEmbedding.map((val, idx) => {
+                return alpha * val + (1 - alpha) * newsEmbedding[idx];
+            }));
+            
+            const updateQuery = `
+                UPDATE user_embeddings
+                SET embed = $1
+                WHERE uid = $2
+            `;
+        }
         await client.query(
             updateQuery,
              [updatedEmbedding, userID]
@@ -109,7 +113,7 @@ const updateUserEmbedding = asyncHandler(async (req, res) => {
     }
 });
 
-export default {
+export {
     newUserEmbedding,
     updateUserEmbedding
 };
