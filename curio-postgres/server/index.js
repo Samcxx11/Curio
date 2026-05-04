@@ -7,6 +7,7 @@ import passport, {googleConfigured} from './config/passport.config.js';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import pool from './models/db.models.js';
+import headlines from './routes/news.routes.js';
 
 // Fix __dirname for ES modules
 const __filename = fileURLToPath(import.meta.url);
@@ -52,7 +53,7 @@ app.use(session({
 
 app.use(passport.initialize());
 app.use(passport.session());
-
+app.use("/api/news",headlines);
 // ── STATIC FILES ───────────────────────────
 app.use(express.static(path.join(__dirname, '../public')));
 

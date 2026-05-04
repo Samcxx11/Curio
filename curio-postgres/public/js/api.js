@@ -4,21 +4,270 @@ const API = '/api';
 
 // ── Verify News API ───────────────────────
 async function verifyNews() {
-  const url = document.querySelector('.hero-input').value;
-  console.log('Verifying news URL:', url);
+  const input = document.querySelector('.hero-input');
+  const url = input.value.trim();
   if (!url) { alert('Please enter a news URL or headline.'); return; }
-  const result = await fetch(`http://localhost:3000/api/analyze-url/analyze-url`, {
+
+  const btn = document.querySelector('.hero-form-btn');
+  btn.textContent = 'Checking…';
+  btn.disabled = true;
+
+  try {
+    const result = await fetch(`http://localhost:3000/api/analyze-url/analyze-url`, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ url })
     });
-  const data = await result.json();
-  console.log('Received scores:', data);
-  const { title, scores } = data.data;
-  return { title, scores };
+    const data = await result.json();
+    const { title, scores } = data.data;
+    displayVerifyResult(title, scores, url);
+  } catch (err) {
+    alert('Failed to analyze URL. Make sure the backend is running.');
+    console.error(err);
+  } finally {
+    btn.textContent = 'Verify Now';
+    btn.disabled = false;
+  }
 }
+
+function displayVerifyResult(title, scores, url) {
+  let panel = document.getElementById('verify-result-panel');
+  if (!panel) {
+    panel = document.createElement('div');
+    panel.id = 'verify-result-panel';
+    document.querySelector('.hero-form').insertAdjacentElement('afterend', panel);
+  }
+
+  const total = scores.total_score;
+  const label = total >= 70 ? 'Likely Real' : total >= 50 ? 'Uncertain' : 'Likely Fake';
+  const color = total >= 70 ? '#2dcc72' : total >= 50 ? '#f5d842' : '#e8453c';
+  const textColor = total >= 50 && total < 70 ? '#7a5c00' : '#fff';
+
+  panel.innerHTML = `
+    <div style="
+      background: var(--white, #fff);
+      border: 1.5px solid var(--border, rgba(15,21,18,.1));
+      border-radius: 20px;
+      padding: 28px 32px;
+      max-width: 520px;
+      margin: 20px auto 0;
+      box-shadow: 0 8px 32px rgba(15,21,18,.09);
+      text-align: left;
+    ">
+      <div style="display:flex; align-items:center; gap:12px; margin-bottom:18px;">
+        <div style="
+          background:${color};
+          color:${textColor};
+          font-family:'Anton',sans-serif;
+          font-size:.72rem;
+          letter-spacing:.14em;
+          text-transform:uppercase;
+          padding:5px 14px;
+          border-radius:999px;
+          flex-shrink:0;
+        ">${label}</div>
+        <div style="font-size:.82rem;color:rgba(15,21,18,.45);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">
+          <a href="${url}" target="_blank" style="color:inherit;">${url}</a>
+        </div>
+      </div>
+
+      <div style="font-family:'Anton',sans-serif;font-size:1.05rem;color:#0f1512;margin-bottom:20px;line-height:1.3;">
+        ${title || 'Article analyzed'}
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px;">
+        ${scoreCard('Credibility', scores.fake_score, '#2dcc72')}
+        ${scoreCard('Clickbait', scores.clickbait_score, '#e8453c')}
+        ${scoreCard('Source', scores.source_score, '#378add')}
+        ${scoreCard('Overall', total / 100, color)}
+      </div>
+
+      <div style="background:rgba(15,21,18,.04);border-radius:10px;padding:12px 16px;">
+        <div style="font-size:.72rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:rgba(15,21,18,.4);margin-bottom:6px;">Overall Score</div>
+        <div style="display:flex;align-items:center;gap:12px;">
+          <div style="flex:1;height:8px;background:rgba(15,21,18,.08);border-radius:4px;overflow:hidden;">
+            <div style="width:${total}%;height:100%;background:${color};border-radius:4px;transition:width 1s ease;"></div>
+          </div>
+          <div style="font-family:'Anton',sans-serif;font-size:1.3rem;color:#0f1512;">${Math.round(total)}</div>
+        </div>
+      </div>
+    </div>
+  `;
+
+  panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+function scoreCard(label, value, color) {
+  const pct = Math.round(value * 100);
+  return `
+    <div style="background:rgba(15,21,18,.03);border-radius:10px;padding:12px 14px;">
+      <div style="font-size:.72rem;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:rgba(15,21,18,.4);margin-bottom:6px;">${label}</div>
+      <div style="font-family:'Anton',sans-serif;font-size:1.5rem;color:#0f1512;">${pct}%</div>
+      <div style="height:4px;background:rgba(15,21,18,.08);border-radius:2px;margin-top:6px;overflow:hidden;">
+        <div style="width:${pct}%;height:100%;background:${color};border-radius:2px;"></div>
+      </div>
+    </div>
+  `;
+}
+
+// For News Headlines
+const EMOJI_BY_SOURCE = {
+  'Reuters': '🌍', 'BBC News': '📺', 'CNN': '📡',
+  'AP News': '📰', 'Bloomberg': '💹', 'TechCrunch': '💻',
+  'ESPN': '🏅', 'NASA': '🚀', 'default': '📰'
+};
+
+function getEmoji(source) {
+  return EMOJI_BY_SOURCE[source] || EMOJI_BY_SOURCE['default'];
+}
+
+async function loadHeadlines() {
+  const track = document.getElementById('newsSliderTrack');
+  const dotsWrap = document.getElementById('sliderDots');
+  if (!track) return;
+
+  // Skeleton loading state
+  track.innerHTML = Array(4).fill(`
+    <article class="news-card" style="opacity:.4;pointer-events:none;">
+      <div class="news-card-img" style="background:#eee;"></div>
+      <div class="news-card-body">
+        <div style="height:10px;background:#eee;border-radius:4px;margin-bottom:8px;width:60%"></div>
+        <div style="height:14px;background:#eee;border-radius:4px;margin-bottom:6px;"></div>
+        <div style="height:14px;background:#eee;border-radius:4px;width:80%"></div>
+      </div>
+    </article>
+  `).join('');
+    
+  // Hide static dummy rows if user is logged in
+  document.querySelectorAll('#news-list .news-row, #news-list .hidden-row').forEach(row => {
+      row.style.display = 'none';
+  });
+  document.getElementById('showMoreBtn')?.closest('.show-more-wrap').style.setProperty('display', 'none');
+
+  try {
+    console.log('Fetching headlines from API...');
+    const res  = await fetch('/api/news/headlines',{
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
+    const data = await res.json();
+
+    if (!res.ok) throw new Error(data.message);
+
+    track.innerHTML = data.headlines.map(item => `
+      <article class="news-card" onclick="window.open('${item.url}','_blank')" style="cursor:pointer;">
+        <div class="news-card-img" style="${item.image ? `background-image:url('${item.image}');background-size:cover;background-position:center;` : ''}">
+          ${!item.image ? `<span>${getEmoji(item.source)}</span>` : ''}
+          <div class="news-card-img-gradient"></div>
+          <div class="news-card-rank">#${item.rank}</div>
+        </div>
+        <div class="news-card-body">
+          <div class="news-card-source">${item.source}</div>
+          <div class="news-card-title">${item.title}</div>
+          <div class="news-card-score" style="justify-content:flex-end;">
+            <div class="score-val" style="font-size:.7rem;color:rgba(15,21,18,.4);">
+              ${new Date(item.publishedAt).toLocaleDateString('en-IN', { day:'numeric', month:'short' })}
+            </div>
+          </div>
+        </div>
+      </article>
+    `).join('');
+
+    // Rebuild dots now that real cards exist
+    if (dotsWrap) {
+      dotsWrap.innerHTML = '';
+      data.headlines.forEach((_, i) => {
+        const d = document.createElement('div');
+        d.className = 'slider-dot' + (i === 0 ? ' active' : '');
+        d.addEventListener('click', () => goToSlide(i));
+        dotsWrap.appendChild(d);
+      });
+    }
+
+  } catch (err) {
+    console.error('Headlines error:', err);
+    track.innerHTML = `
+      <div style="padding:2rem;color:rgba(15,21,18,.4);font-size:.88rem;">
+        Could not load headlines. ${err.message || ''}
+      </div>`;
+  }
+}
+
+//------------- Recommending news for user
+async function loadRecommendations() {
+    const token = getToken();
+    if (!token) return; // user not logged in, skip
+
+    const container = document.getElementById('newsCardGrid');
+    if (!container) return;
+
+    // Show skeleton while loading
+    container.innerHTML = Array(4).fill(`
+        <div class="news-row" style="opacity:.4;pointer-events:none;">
+            <div class="news-row-img" style="background:#eee;border-radius:8px;"></div>
+            <div class="news-row-content">
+                <div style="height:10px;background:#eee;border-radius:4px;width:40%;margin-bottom:8px;"></div>
+                <div style="height:14px;background:#eee;border-radius:4px;margin-bottom:6px;"></div>
+                <div style="height:12px;background:#eee;border-radius:4px;width:70%;"></div>
+            </div>
+        </div>
+    `).join('');
+
+    try {
+        const res = await fetch('http://localhost:3000/api/recommendation', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({ uid: getUser()?.id })
+        });
+        console.log(res);
+
+        const data = await res.json();
+
+        if (!res.ok) throw new Error(data.message || 'Failed to load recommendations');
+
+        const news = data.data;
+
+        if (!news || news.length === 0) {
+            container.innerHTML = `
+                <p style="color:rgba(15,21,18,.4);font-size:.88rem;padding:1rem 0;">
+                    No recommendations yet. Read some articles to get started.
+                </p>`;
+            return;
+        }
+
+        container.innerHTML = news.map(item => `
+            <article class="news-row" onclick="window.open('${item.url}','_blank')" style="cursor:pointer;">
+                <div class="news-row-img">📰</div>
+                <div class="news-row-content">
+                    <div class="news-row-meta">
+                        <span class="news-row-source">${item.source || 'Unknown'}</span>
+                        <span class="news-row-dot"></span>
+                        <span class="news-row-time">
+                            ${item.published_at
+                                ? new Date(item.published_at).toLocaleDateString('en-IN', { day:'numeric', month:'short' })
+                                : ''}
+                        </span>
+                    </div>
+                    <div class="news-row-title">${item.title}</div>
+                </div>
+            </article>
+        `).join('');
+
+    } catch (err) {
+        console.error('Recommendation error:', err);
+        container.innerHTML = `
+            <p style="color:rgba(15,21,18,.4);font-size:.88rem;padding:1rem 0;">
+                Could not load recommendations. ${err.message}
+            </p>`;
+    }
+} 
+
+
 
 // ── Auth helpers ──────────────────────────────────────────────
 function getToken() { return localStorage.getItem('curio_token'); }
@@ -49,7 +298,12 @@ async function apiRegister(fields) {
   return data.user;
 }
 
-function apiLogout() { clearAuth(); updateAuthUI(); }
+function apiLogout() { 
+  clearAuth();
+    const container = document.getElementById('newsCardGrid');
+    if (container) container.innerHTML = '';
+  updateAuthUI();
+}
 
 // ── News API ──────────────────────────────────────────────────
 async function fetchNews(category = 'All', page = 1, limit = 6) {
@@ -75,6 +329,10 @@ function updateAuthUI() {
     if (loginBtn)  loginBtn.textContent = user.name.split(' ')[0];
     if (ctaBtn)    ctaBtn.style.display = 'none';
     if (logoutBtn) { logoutBtn.style.display = 'inline-flex'; logoutBtn.onclick = apiLogout; }
+    // hide static rows for logged in users
+        document.querySelectorAll('#news-list .news-row, #news-list .hidden-row')
+            .forEach(row => row.style.display = 'none');
+        document.querySelector('.show-more-wrap')?.style.setProperty('display', 'none');
     // Show welcome toast
     const toast = document.getElementById('authToast');
     if (toast && !sessionStorage.getItem('welcomed')) {
@@ -87,7 +345,11 @@ function updateAuthUI() {
     if (loginBtn)  loginBtn.textContent = 'Login';
     if (ctaBtn)    ctaBtn.style.display = '';
     if (logoutBtn) logoutBtn.style.display = 'none';
-  }
+    // restore static rows when logged out
+        document.querySelectorAll('#news-list .news-row')
+            .forEach(row => row.style.display = '');
+        document.querySelector('.show-more-wrap')?.style.setProperty('display', '');
+    }
 }
 
 // ── UI: Load real news into news section ──────────────────────
@@ -352,6 +614,8 @@ document.addEventListener('DOMContentLoaded', () => {
   checkOAuthStatus();
   loadCategories();
   loadNews();
+  loadHeadlines();
+  loadRecommendations();
 
   // Show More button
   const showMore = document.getElementById('showMoreBtn');

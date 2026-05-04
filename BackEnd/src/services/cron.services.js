@@ -4,12 +4,13 @@ import newsServices from "./newsIngestion.service.js";
 function startNewsCron() {
 
   console.log("News cron initialized");
-
+  if(1){
+    return "News cron started successfully";
+  }
   cron.schedule("*/1 * * * *", async () => { //Ingesting news at every minute
     console.log("Running news ingestion...");
     await newsServices.fetchNews();
   });
-
 }
 
 export { startNewsCron };

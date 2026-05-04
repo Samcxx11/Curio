@@ -1,6 +1,9 @@
 import express from 'express';
 import authMiddleware from '../middleware/auth.middleware.js';
 import pool from '../models/db.models.js';
+import dotenv from "dotenv";
+
+dotenv.config();
 
 const router = express.Router();
 
@@ -86,6 +89,65 @@ router.post('/bookmark/:id', authMiddleware, async (req, res) => {
     res.status(500).json({ message: "Server error" });
   } finally {
     if (client) client.release();
+  }
+});
+
+// GET /api/news/headlines
+router.get('/headlines', async (req, res) => {
+  console.log("Fetching headlines...");
+  const apiKey = process.env.NEWS_API_KEY;
+  if (!apiKey) return res.status(503).json({ message: 'NEWS_API_KEY not set' });
+
+  try {
+    const response = await fetch(
+      `https://newsapi.org/v2/top-headlines?language=en&pageSize=10&apiKey=${apiKey}`
+    );
+    const data = await response.json();
+
+    if (data.status !== 'ok') {
+      return res.status(500).json({ message: data.message || 'NewsAPI error' });
+    }
+
+    const headlines = data.articles.map((a, i) => ({
+      rank:        i + 1,
+      title:       a.title || 'Untitled',
+      source:      a.source?.name || 'Unknown',
+      url:         a.url,
+      image:       a.urlToImage || null,
+      publishedAt: a.publishedAt,
+    }));
+
+    res.json({ headlines });
+  } catch (err) {
+    console.error('Headlines fetch error:', err);
+    res.status(500).json({ message: 'Failed to fetch headlines' });
+  }
+});
+
+// POST /api/news/recommendations  — proxies to BackEnd on port 3000
+router.post('/recommendations', authMiddleware, async (req, res) => {
+  try {
+    // Generate a port 3000 compatible token using its secret
+    const backendToken = jwt.sign(
+      { uid: req.user.id },
+      process.env.BACKEND_JWT_SECRET,
+      { expiresIn: '1h' }
+    );
+
+    const response = await fetch('http://localhost:3000/api/recommendation', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${backendToken}`
+      },
+      body: JSON.stringify({ uid: req.user.id }) 
+    });
+
+    const data = await response.json();
+    res.status(response.status).json(data);
+
+  } catch (err) {
+    res.status(500).json({ message: err.message });
   }
 });
 
