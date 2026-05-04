@@ -19,12 +19,14 @@ const getNewsEmbedding = async ({ title, description }) => {
 
 // ── Call the detection server (port 8001) ─────────────────────────────────────
 const getNewsScore = async ({ title, description, source }) => {
+    console.log("calculating score......");
     try {
         const response = await axios.post("http://localhost:8001/score", {
             title,
             description: description || "",
             source: source || ""
         });
+        console.log("score of news ", response.data)
         return response.data; // { fake_score, clickbait_score, source_score, total_score }
     } catch (err) {
         console.error("Detection API error:", err.message);
@@ -159,4 +161,7 @@ const fetchNews = async () => {
       }
 };
 
-export default fetchNews;
+export default {
+    fetchNews,
+    getNewsScore
+};

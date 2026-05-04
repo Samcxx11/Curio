@@ -31,7 +31,9 @@ const app = express();
 // ── MIDDLEWARE ─────────────────────────────
 app.use(cors({
   origin: CLIENT_URL,
-  credentials: true
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
 app.use(express.json());
@@ -41,7 +43,9 @@ app.use(session({
   resave: false,
   saveUninitialized: false,
   cookie: {
-    secure: process.env.NODE_ENV === 'production',
+    secure: false,  // ✅ Set to false for localhost (no HTTPS)
+    httpOnly: true,
+    sameSite: 'lax',  // ✅ Add this for better compatibility
     maxAge: 7 * 24 * 60 * 60 * 1000
   }
 }));

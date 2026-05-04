@@ -1,4 +1,5 @@
-# Run with: python -m uvicorn detection_api:app --port 8001
+# Run with: python -m uvicorn detection_api:app --port 8001 --> for ingestion
+# Run with: python -m uvicorn detection_api:app --port 8002 --> for testing
 # Install:  pip install fastapi uvicorn scikit-learn pandas nltk indic-transliteration
 
 from fastapi import FastAPI, HTTPException

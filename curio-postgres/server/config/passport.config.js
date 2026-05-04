@@ -59,8 +59,8 @@ if (googleConfigured) {
           await pool.query(
             `UPDATE users
              SET google_id = $1, avatar = $2
-             WHERE id = $3`,
-            [googleId, avatar, user.id]
+             WHERE uid = $3`,
+            [googleId, avatar, user.uid]
           );
         } else {
           // 🆕 create new user
@@ -98,14 +98,14 @@ if (googleConfigured) {
 
 // session handling
 passport.serializeUser((user, done) => {
-  done(null, user.id);
+  done(null, user.uid);
 });
 
-passport.deserializeUser(async (id, done) => {
+passport.deserializeUser(async (uid, done) => {
   try {
     const result = await pool.query(
-      'SELECT * FROM users WHERE id = $1',
-      [id]
+      'SELECT * FROM users WHERE uid = $1',
+      [uid]
     );
     done(null, result.rows[0]);
   } catch (err) {

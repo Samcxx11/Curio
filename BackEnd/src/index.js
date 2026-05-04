@@ -4,6 +4,7 @@ import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import {startNewsCron} from "./services/cron.services.js";
 import recommend from "./routes/recommendation.route.js";
+import analyze_url from "./routes/analyze_url.route.js";
 
 const app = express();
 
@@ -19,11 +20,11 @@ app.use(express.static('public'));
 app.use(cookieParser());
 
 
-//app.use("/api/User", router);
-//https://localhost:3000/api/User/login
-
 app.use("/api/recommendation", recommend);
 //https://localhost:3000/api/recommendation
+
+app.use("/api/analyze-url", analyze_url);
+//https://localhost:3000/api/analyze-url
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {

@@ -2,6 +2,24 @@
 
 const API = '/api';
 
+// ── Verify News API ───────────────────────
+async function verifyNews() {
+  const url = document.querySelector('.hero-input').value;
+  console.log('Verifying news URL:', url);
+  if (!url) { alert('Please enter a news URL or headline.'); return; }
+  const result = await fetch(`http://localhost:3000/api/analyze-url/analyze-url`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ url })
+    });
+  const data = await result.json();
+  console.log('Received scores:', data);
+  const { title, scores } = data.data;
+  return { title, scores };
+}
+
 // ── Auth helpers ──────────────────────────────────────────────
 function getToken() { return localStorage.getItem('curio_token'); }
 function setToken(t) { localStorage.setItem('curio_token', t); }

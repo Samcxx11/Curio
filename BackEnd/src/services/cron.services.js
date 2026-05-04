@@ -1,5 +1,5 @@
 import cron from "node-cron";
-import fetchNews from "./newsIngestion.service.js";
+import newsServices from "./newsIngestion.service.js";
 
 function startNewsCron() {
 
@@ -7,7 +7,7 @@ function startNewsCron() {
 
   cron.schedule("*/1 * * * *", async () => { //Ingesting news at every minute
     console.log("Running news ingestion...");
-    await fetchNews();
+    await newsServices.fetchNews();
   });
 
 }
